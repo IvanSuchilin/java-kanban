@@ -1,0 +1,21 @@
+Цель: программа, отвечающая за формирование модели данных
+
+Требования:
+1.нужно  чтобы методы возвращали объекты нужных типов;
+2. Class Task(Name, Description, id, Status);
+3. Status [NEW, IN_PROGRESS, DONE];
+4. Class SubTask(Epic) extends Task;
+5. Class EpicTask(Subtasks[]) extends Task;
+6. каждая задача имеет уникальный идентификатор;
+7. Class TaskManager
+    7.1 Возможность хранить задачи всех типов
+    7.2 Методы
+       7.2.1 TaskManager.listAllTasks() получить список всех задач
+       7.2.2 TaskManager.deleteAllTasks()
+       7.2.3 TaskManager.getTaskByUid(int id)
+       7.2.4 TaskManager.addTask(Task newTask)
+       7.2.5 TaskManager.updateTask(int id, Task newTask)?
+       7.2.6 TaskManager.deleteTaskByUid(int id)
+    7.3 TaskManager.getTasksFromEpicTask(int id)
+    7.4.1 Task.status
+    7.4.2
