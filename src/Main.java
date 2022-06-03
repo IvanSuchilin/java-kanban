@@ -20,7 +20,7 @@ public class Main {
         //эпик + 1 подзадача
         EpicTask epicTask2 = new EpicTask("epicName2", "try for check2", Task.allStatus[0]);
         tasksManager.addEpicTask(epicTask2);
-        Subtask subtask3 = new Subtask( "thirdSubtask", "sub in epicTask2",
+        Subtask subtask3 = new Subtask("thirdSubtask", "sub in epicTask2",
                 Task.allStatus[1], epicTask2);
         tasksManager.addSubtask(subtask3);
         //печать списков задач по категории
@@ -33,7 +33,7 @@ public class Main {
 
         subtask2.changeStatus(Task.allStatus[2]);                           //сменить статус подзадачи-печать-обновить
         System.out.println(epicTask1.getStatus());
-        tasksManager.updateSubtask (subtask2);
+        tasksManager.updateSubtask(subtask2);
         System.out.println(subtask2.getStatus());
         epicTask1.changeStatus(Task.allStatus[0]);
         System.out.println(epicTask1.getStatus());
@@ -50,7 +50,7 @@ public class Main {
 
         System.out.println(tasksManager.getSubtasksList());
 
-        tasksManager.deleteTaskById(3);                                    //удалить эпик 1 - чек списки подзадач и эпик
+        tasksManager.deleteTaskById(3);                                    //удалить эпик 1 - чек чписки подзадач и эпик
         System.out.println(tasksManager.getSubtasksList());
         System.out.println(tasksManager.getEpicTasksList());
     }
