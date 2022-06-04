@@ -50,7 +50,7 @@ public class Main {
 
         System.out.println(tasksManager.getSubtasksList());
 
-        tasksManager.deleteTaskById(3);                                    //удалить эпик 1 - чек чписки подзадач и эпик
+        tasksManager.deleteTaskById(3);                                    //удалить эпик 1 - чек cписки подзадач и эпик
         System.out.println(tasksManager.getSubtasksList());
         System.out.println(tasksManager.getEpicTasksList());
     }

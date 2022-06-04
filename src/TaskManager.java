@@ -6,8 +6,15 @@ public class TaskManager {
     HashMap<Integer, Task> tasks = new HashMap<>();
     HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
     HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    static int count = 0;
+
+    public int increaseCount(){
+        count++;
+        return count;
+    }
 
     public Subtask addSubtask(Subtask subtask) {
+        subtask.setId(increaseCount());
         subtasks.put(subtask.getId(), subtask);
         subtask.getParent().childSubtasks.add(subtask);
         subtask.getParent().checkStatus();
@@ -15,11 +22,13 @@ public class TaskManager {
     }
 
     public Task addTask(Task task) {
+        task.setId(increaseCount());
         tasks.put(task.getId(), task);
         return task;
     }
 
     public EpicTask addEpicTask(EpicTask epicTask) {
+        epicTask.setId(increaseCount());
         epicTasks.put(epicTask.getId(), epicTask);
         return epicTask;
     }
