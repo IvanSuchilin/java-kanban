@@ -5,7 +5,7 @@
 2. Class Task(Name, Description, id, Status);
 3. Status [NEW, IN_PROGRESS, DONE];
 4. Class SubTask(Epic) extends Task;
-5. Class EpicTask(Subtasks[]) extends Task;
+5. Class Epic(Subtasks[]) extends Task;
 6. каждая задача имеет уникальный идентификатор;
 7. Class TaskManager
     7.1 Возможность хранить задачи всех типов

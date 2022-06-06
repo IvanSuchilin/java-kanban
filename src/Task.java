@@ -1,15 +1,24 @@
 public class Task {
 
-    protected String name;
-    protected String description;
+    private String name;
+    private String description;
     private int id;
-    protected static String[] allStatus = {"NEW", "IN_PROGRESS", "DONE"};
-    private String status;
+    private Status status;
 
-    public Task(String name, String description, String status) {
+    public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() + '\'' +
+                ", status=" + getStatus() +
+                '}';
     }
 
     public int getId() {
@@ -20,15 +29,29 @@ public class Task {
         this.id = id;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public void changeStatus(String newStatus) {
+    public void changeStatus(Status newStatus) {
         setStatus(newStatus);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 }
+    enum Status {
+        NEW,
+        IN_PROGRESS,
+        DONE
+    }
