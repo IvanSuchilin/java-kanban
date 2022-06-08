@@ -1,7 +1,7 @@
 public class Subtask extends Task {
     private final Epic parent;
 
-    public Subtask(String name, String description, Status status, Epic parent) {
+    public Subtask(String name, String description, Task.Status status, Epic parent) {
         super(name, description, status);
         this.parent = parent;
     }

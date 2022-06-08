@@ -2,9 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Epic extends Task {
-    ArrayList<Subtask> childSubtasks;
 
-    public Epic(String name, String description, Status status) {
+    private ArrayList<Subtask> childSubtasks;
+
+    public Epic(String name, String description, Task.Status status) {
         super(name, description, status);
         childSubtasks = new ArrayList<>();
         setStatus(Status.NEW);
@@ -19,6 +20,10 @@ public class Epic extends Task {
                 ", status=" + getStatus() + '\'' +
                 Arrays.toString(new ArrayList[]{childSubtasks}) +
                 '}';
+    }
+
+    public ArrayList<Subtask> getChildSubtasks() {
+        return childSubtasks;
     }
 
     public void checkStatus() {

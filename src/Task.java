@@ -49,9 +49,10 @@ public class Task {
         return description;
     }
 
-}
     enum Status {
         NEW,
         IN_PROGRESS,
         DONE
     }
+
+}
