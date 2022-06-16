@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager tasksManager = new TaskManager();
+        InMemoryTaskManager tasksManager = new InMemoryTaskManager();
 
         Task newTask1 = new Task("first", "check", Task.Status.NEW);   //создать-добавить задачу
         tasksManager.addTask(newTask1);
@@ -10,7 +10,7 @@ public class Main {
 
         Epic epic1 = new Epic("epicName1", "try for check1",       //эпик + 2 подзадачи
                 Task.Status.DONE);
-        tasksManager.addEpicTask(epic1);
+        tasksManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
                 Task.Status.DONE, epic1);
         tasksManager.addSubtask(subtask1);
@@ -19,12 +19,37 @@ public class Main {
         tasksManager.addSubtask(subtask2);
         //эпик + 1 подзадача
         Epic epic2 = new Epic("epicName2", "try for check2", Task.Status.NEW);
-        tasksManager.addEpicTask(epic2);
+        tasksManager.addEpic(epic2);
         Subtask subtask3 = new Subtask("thirdSubtask", "sub in epicTask2",
                 Task.Status.IN_PROGRESS, epic2);
         tasksManager.addSubtask(subtask3);
-        //печать списков задач по категории
 
+        //запросы задач для тестирования нового функционала
+        tasksManager.getTaskById(6);
+        tasksManager.getTaskById(3);
+        System.out.println();
+        System.out.println(tasksManager.getTaskById(5));
+        tasksManager.getTaskById(5);
+        System.out.println();
+        System.out.println("Вывод истории запросов задач:");
+        System.out.println(tasksManager.getHistory());
+        tasksManager.getTaskById(4);
+        tasksManager.getTaskById(6);
+        tasksManager.getTaskById(3);
+        tasksManager.getTaskById(5);
+        tasksManager.getTaskById(4);
+        tasksManager.getTaskById(6);
+        System.out.println();
+        System.out.println("Вывод истории запросов 10 задач:");
+        System.out.println(tasksManager.getHistory());
+        tasksManager.getTaskById(3);
+        tasksManager.getTaskById(5);
+        tasksManager.getTaskById(4);
+        System.out.println();
+        System.out.println("Вывод истории запросов 10 задач:");
+        System.out.println(tasksManager.getHistory());
+
+        //печать списков задач по категории
         System.out.println("Вывод всех задач:");
         System.out.println(tasksManager.getAllTypeTasksList(TaskType.TASK));
         System.out.println();
@@ -68,7 +93,7 @@ public class Main {
         System.out.println("Смена статсуса эпика " + epic1.getName() + " на NEW и вывод:");
         epic1.changeStatus(Task.Status.NEW);
         System.out.println(epic1.getStatus());
-        tasksManager.updateEpicTask(epic1);
+        tasksManager.updateEpic(epic1);
         System.out.println("Обновление эпика " + epic1.getName() + " и вывод статуса:");
         System.out.println(epic1.getStatus());
 
