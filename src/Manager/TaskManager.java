@@ -1,16 +1,20 @@
+package Manager;
+
+import Task.*;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
 
     List<Task> getHistory();
 
-    HashMap<Integer, Task> getTasks();
+    Map<Integer, Task> getTasks();
 
-    HashMap<Integer, Epic> getEpics();
+    Map<Integer, Epic> getEpics();
 
-    HashMap<Integer, Subtask> getSubtasks();
+    Map<Integer, Subtask> getSubtasks();
 
     Subtask addSubtask(Subtask subtask);
 
@@ -24,7 +28,7 @@ public interface TaskManager {
 
     void deleteAllTasksFromSet(TaskType nameTasksSet);
 
-    Task getTaskById(int id);
+    Task getTaskById(int id) throws CloneNotSupportedException;
 
     void updateEpic(Epic epic);
 

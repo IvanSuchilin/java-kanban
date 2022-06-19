@@ -1,3 +1,5 @@
+package Task;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -13,7 +15,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "\nEpic{" +
+        return "\nTask.Epic{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +

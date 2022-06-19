@@ -1,4 +1,6 @@
-public class Task {
+package Task;
+
+public class Task implements Cloneable {
 
     private String name;
     private String description;
@@ -12,8 +14,14 @@ public class Task {
     }
 
     @Override
+    public Task clone() throws CloneNotSupportedException {
+
+        return (Task) super.clone();
+    }
+
+    @Override
     public String toString() {
-        return "\nTask{" +
+        return "\nTask.Task{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +
@@ -49,10 +57,9 @@ public class Task {
         return description;
     }
 
-    enum Status {
+    public enum Status {
         NEW,
         IN_PROGRESS,
         DONE
     }
-
 }
