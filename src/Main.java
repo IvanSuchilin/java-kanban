@@ -17,14 +17,14 @@ public class Main {
                 Task.Status.DONE, epic1);
         tasksManager.addSubtask(subtask1);
         Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
-                Task.Status.IN_PROGRESS, epic1);
+                Task.Status.NEW, epic1);
         tasksManager.addSubtask(subtask2);
         tasksManager.getTaskById(3);
         //эпик + 1 подзадача
         Epic epic2 = new Epic("epicName2", "try for check2", Task.Status.NEW);
         tasksManager.addEpic(epic2);
         Subtask subtask3 = new Subtask("thirdSubtask", "sub in epicTask2",
-                Task.Status.IN_PROGRESS, epic2);
+                Task.Status.NEW, epic2);
         tasksManager.addSubtask(subtask3);
         tasksManager.getTaskById(5);
         tasksManager.getTaskById(6);

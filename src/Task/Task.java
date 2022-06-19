@@ -15,8 +15,10 @@ public class Task implements Cloneable {
 
     @Override
     public Task clone() throws CloneNotSupportedException {
-
-        return (Task) super.clone();
+        super.clone();
+        Task addTask = new Task(this.name, this.description, this.status);
+        addTask.setId(this.id);
+        return addTask;
     }
 
     @Override

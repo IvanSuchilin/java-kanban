@@ -14,6 +14,17 @@ public class Epic extends Task {
     }
 
     @Override
+    public Epic clone() throws CloneNotSupportedException {
+        super.clone();
+        Epic addTask = new Epic(this.getName(), this.getDescription(), this.getStatus());
+        addTask.setId(this.getId());
+        for (int i = 0; i < this.childSubtasks.size(); i++)
+            addTask.getChildSubtasks().add(this.childSubtasks.get(i).clone());
+        addTask.checkStatus();
+        return addTask;
+    }
+
+    @Override
     public String toString() {
         return "\nTask.Epic{" +
                 "name='" + getName() + '\'' +
@@ -37,6 +48,7 @@ public class Epic extends Task {
         for (Subtask task : childSubtasks) {
             if (task.getStatus().equals(Status.DONE)) {
                 doneCounter++;
+                setStatus(Status.IN_PROGRESS);
             } else if (task.getStatus().equals(Status.IN_PROGRESS)) {
                 setStatus(Status.IN_PROGRESS);
                 break;

@@ -9,6 +9,14 @@ public class Subtask extends Task {
     }
 
     @Override
+    public Subtask clone() throws CloneNotSupportedException {
+        super.clone();
+        Subtask addTask = new Subtask(this.getName(), this.getDescription(), this.getStatus(), this.getParent());
+        addTask.setId(this.getId());
+        return addTask;
+    }
+
+    @Override
     public String toString() {
         return "Task.Subtask{" +
                 "name='" + getName() + '\'' +
