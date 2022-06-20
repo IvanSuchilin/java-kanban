@@ -1,6 +1,6 @@
-package Manager;
+package manager;
 
-import Task.Task;
+import task.Task;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ public interface HistoryManager {
 
     int LIMIT = 10;
 
-    void add(Task task) throws CloneNotSupportedException;
+    void add(Task task);
 
     List<Task> getHistory();
 }

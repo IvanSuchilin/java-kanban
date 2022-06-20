@@ -1,4 +1,4 @@
-package Task;
+package task;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,17 +11,6 @@ public class Epic extends Task {
         super(name, description, status);
         childSubtasks = new ArrayList<>();
         setStatus(Status.NEW);
-    }
-
-    @Override
-    public Epic clone() throws CloneNotSupportedException {
-        super.clone();
-        Epic addTask = new Epic(this.getName(), this.getDescription(), this.getStatus());
-        addTask.setId(this.getId());
-        for (int i = 0; i < this.childSubtasks.size(); i++)
-            addTask.getChildSubtasks().add(this.childSubtasks.get(i).clone());
-        addTask.checkStatus();
-        return addTask;
     }
 
     @Override

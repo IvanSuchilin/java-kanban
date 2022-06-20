@@ -1,5 +1,5 @@
-import Manager.*;
-import Task.*;
+import manager.*;
+import task.*;
 
 public class Main {
 
@@ -37,7 +37,7 @@ public class Main {
         System.out.println();
         System.out.println("Вывод всех эпиков:");
         System.out.println(tasksManager.getAllTypeTasksList(TaskType.EPIC));
-        //сменить статус задачи-печать
+        //запросить/сменить статус задачи-печать
         tasksManager.getTaskById(1);
         System.out.println();
         System.out.println("Смена статсуса задачи " + newTask1.getName() + " на DONE и запрос ее");

@@ -1,6 +1,6 @@
-package Task;
+package task;
 
-public class Task implements Cloneable {
+public class Task {
 
     private String name;
     private String description;
@@ -11,14 +11,6 @@ public class Task implements Cloneable {
         this.name = name;
         this.description = description;
         this.status = status;
-    }
-
-    @Override
-    public Task clone() throws CloneNotSupportedException {
-        super.clone();
-        Task addTask = new Task(this.name, this.description, this.status);
-        addTask.setId(this.id);
-        return addTask;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package Manager;
+package manager;
 
 final public class Managers {
     static HistoryManager historyManager = new InMemoryHistoryManager();

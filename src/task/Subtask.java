@@ -1,4 +1,4 @@
-package Task;
+package task;
 
 public class Subtask extends Task {
     private final Epic parent;
@@ -6,14 +6,6 @@ public class Subtask extends Task {
     public Subtask(String name, String description, Task.Status status, Epic parent) {
         super(name, description, status);
         this.parent = parent;
-    }
-
-    @Override
-    public Subtask clone() throws CloneNotSupportedException {
-        super.clone();
-        Subtask addTask = new Subtask(this.getName(), this.getDescription(), this.getStatus(), this.getParent());
-        addTask.setId(this.getId());
-        return addTask;
     }
 
     @Override
