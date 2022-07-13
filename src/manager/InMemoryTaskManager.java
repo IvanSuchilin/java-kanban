@@ -9,9 +9,9 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private Map<Integer, Task> tasks = new HashMap<>();
-    private Map<Integer, Epic> epics = new HashMap<>();
-    private Map<Integer, Subtask> subtasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private static int count = 0;
     HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -66,6 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(int id) {
         if (tasks.containsKey(id)) {
+            historyManager.remove(id);
             tasks.remove(id);
         } else if (subtasks.containsKey(id)) {
             Epic epic = subtasks.get(id).getParent();
@@ -76,20 +77,23 @@ public class InMemoryTaskManager implements TaskManager {
                     break;
                 }
             }
+            historyManager.remove(id);
             subtasks.remove(id);
             epic.checkStatus();
         } else {
             Epic epic = epics.get(id);
             for (Subtask subtask : epic.getChildSubtasks()) {
+                historyManager.remove(subtask.getId());
                 subtasks.remove(subtask.getId());
             }
             epic.getChildSubtasks().clear();
+            historyManager.remove(id);
             epics.remove(id);
         }
     }
 
     @Override
-    public ArrayList<String> getAllTypeTasksList(TaskType nameTaskTypeSet) {                    //списки задач каждого вида
+    public ArrayList<String> getAllTypeTasksList(TaskType nameTaskTypeSet) {                  //списки задач каждого вида
         ArrayList<String> tasksName = new ArrayList<>();
         if (nameTaskTypeSet.equals(TaskType.TASK)) {
             for (int key : tasks.keySet()) {
@@ -112,20 +116,31 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllTasksFromSet(TaskType nameTasksSet) {
         if (nameTasksSet.equals(TaskType.TASK)) {
-            tasks.clear();
+            for (Task task : tasks.values()) {
+                historyManager.remove(task.getId());
+            }
         } else if (nameTasksSet.equals(TaskType.SUBTASK)) {
+            for (Task subtask : subtasks.values()) {
+                historyManager.remove(subtask.getId());
+            }
             subtasks.clear();
             for (int key : epics.keySet()) {
                 epics.get(key);
             }
         } else {
+            for (Task epic : epics.values()) {
+                historyManager.remove(epic.getId());
+            }
+            for (Task subtask : subtasks.values()) {
+                historyManager.remove(subtask.getId());
+            }
             epics.clear();
             subtasks.clear();
         }
     }
 
     @Override
-    public Task getTaskById(int id) throws CloneNotSupportedException {
+    public Task getTaskById(int id) {
         if (tasks.containsKey(id)) {
             historyManager.add(tasks.get(id));
             return tasks.get(id);
