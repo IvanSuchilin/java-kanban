@@ -10,7 +10,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Task.Subtask{" +
+        return "\nTask.Subtask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +

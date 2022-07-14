@@ -2,16 +2,13 @@ import manager.*;
 import task.*;
 
 public class Main {
-    private static void printInfo() {
-        TaskManager tasksManager = Managers.getDefault();
-        System.out.println(tasksManager.getHistory());
-        System.out.println("Размер истории: " + tasksManager.getHistory().size());
-    }
 
     public static void main(String[] args) throws CloneNotSupportedException {
         TaskManager tasksManager = Managers.getDefault();
-
-
+        Task newTask1 = new Task("first", "check", Task.Status.NEW);   //создать-добавить задачу
+        tasksManager.addTask(newTask1);
+        Task newTask2 = new Task("second", "check1", Task.Status.IN_PROGRESS);
+        tasksManager.addTask(newTask2);
         Epic epic1 = new Epic("epicName1", "try for check1",       //эпик + 2 подзадачи
                 Task.Status.DONE);
         tasksManager.addEpic(epic1);
@@ -33,52 +30,32 @@ public class Main {
         tasksManager.getTaskById(3);
         tasksManager.getTaskById(4);
         tasksManager.getTaskById(5);
+        tasksManager.getTaskById(6);
+        tasksManager.getTaskById(7);
         printInfo();
         tasksManager.getTaskById(4);
         tasksManager.getTaskById(5);
-        tasksManager.getTaskById(4);
-        tasksManager.getTaskById(5);
-        tasksManager.getTaskById(5);
         tasksManager.getTaskById(3);
-        tasksManager.getTaskById(1);
-        tasksManager.getTaskById(1);
-        printInfo();
-        tasksManager.getTaskById(2);
-        tasksManager.getTaskById(2);
-        tasksManager.getTaskById(3);
-        tasksManager.getTaskById(4);
+        tasksManager.getTaskById(6);
         tasksManager.getTaskById(5);
-        tasksManager.getTaskById(4);
-        tasksManager.getTaskById(5);
-        tasksManager.getTaskById(4);
-        printInfo();
-        tasksManager.getTaskById(5);
-        tasksManager.getTaskById(5);
-        tasksManager.getTaskById(3);
-        tasksManager.getTaskById(1);
+        tasksManager.getTaskById(7);
         tasksManager.getTaskById(1);
         tasksManager.getTaskById(2);
-        tasksManager.getTaskById(4);
-        tasksManager.getTaskById(5);
-        tasksManager.getTaskById(4);
-        tasksManager.getTaskById(5);
-        tasksManager.getTaskById(4);
-        tasksManager.getTaskById(5);
-        tasksManager.getTaskById(5);
         printInfo();
         //проверка удаления
         tasksManager.deleteTaskById(2);
         printInfo();
-        tasksManager.deleteTaskById(1);
+        tasksManager.deleteTaskById(3);
         printInfo();
-
-        /*
-        код ниже работает как проверка удаления вместо кода выше
-         */
-
-        /*tasksManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        //дополнительная проверка на удаления сета
+        tasksManager.deleteAllTasksFromSet(TaskType.TASK);
         System.out.println(tasksManager.getHistory());
-        System.out.println(tasksManager.getHistory().size());*/
+        System.out.println(tasksManager.getHistory().size());
+    }
 
+    private static void printInfo() {
+        TaskManager tasksManager = Managers.getDefault();
+        System.out.println(tasksManager.getHistory());
+        System.out.println("Размер истории: " + tasksManager.getHistory().size());
     }
 }
