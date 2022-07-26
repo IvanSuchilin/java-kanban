@@ -9,8 +9,14 @@ public class Subtask extends Task {
     }
 
     @Override
+    public String toCsvString() {
+        return String.join(",", Integer.toString(getId()), TaskType.SUBTASK.toString(), getName(),
+                getStatus().toString(), getDescription(), Integer.toString(getParent().getId()));
+    }
+
+    @Override
     public String toString() {
-        return "\nTask.Subtask{" +
+        return "\nSubtask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +

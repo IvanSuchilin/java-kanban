@@ -15,7 +15,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "\nTask.Epic{" +
+        return "\nEpic{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +
@@ -57,5 +57,11 @@ public class Epic extends Task {
     @Override
     public void changeStatus(Status newStatus) {
         setStatus(getStatus());
+    }
+
+    @Override
+    public String toCsvString() {
+        return String.join(",", Integer.toString(getId()), TaskType.EPIC.toString(), getName(),
+                getStatus().toString(), getDescription());
     }
 }

@@ -20,10 +20,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private int increaseCount() {
-        return ++count;
-    }
-
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
@@ -180,5 +176,9 @@ public class InMemoryTaskManager implements TaskManager {
             subtasksName.add(epic.getChildSubtasks().get(i).getName());
         }
         return subtasksName;
+    }
+
+    private int increaseCount() {
+        return ++count;
     }
 }

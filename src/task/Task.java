@@ -15,7 +15,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "\nTask.Task{" +
+        return "\nTask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +
@@ -49,6 +49,11 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+
+    public String toCsvString() {
+        return String.join(",", Integer.toString(getId()), TaskType.TASK.toString(), getName(),
+                getStatus().toString(), getDescription());
     }
 
     public enum Status {

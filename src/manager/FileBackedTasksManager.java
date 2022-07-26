@@ -3,7 +3,6 @@ package manager;
 import task.Epic;
 import task.Subtask;
 import task.Task;
-import task.TaskType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +13,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    String path;
+
+    private final String path;
 
     public FileBackedTasksManager(String path) {
         this.path = path;
@@ -22,7 +22,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
 
-        FileBackedTasksManager fileBacked = new FileBackedTasksManager("backUp.csv");
+        final String FILE_PATH = "backUp.csv";
+        FileBackedTasksManager fileBacked = new FileBackedTasksManager(FILE_PATH);
         Task newTask1 = new Task("first", "check", Task.Status.NEW);   //создать-добавить задачу
         fileBacked.addTask(newTask1);
         Task newTask2 = new Task("second", "check1", Task.Status.IN_PROGRESS);
@@ -30,11 +31,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         Epic epic1 = new Epic("epicName1", "try for check1",       //эпик + 2 подзадачи
                 Task.Status.DONE);
         fileBacked.addEpic(epic1);
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
-                Task.Status.DONE, epic1);
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.DONE, epic1);
         fileBacked.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
-                Task.Status.NEW, epic1);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.NEW, epic1);
         fileBacked.addSubtask(subtask2);
         fileBacked.getTaskById(1);
         fileBacked.getTaskById(2);
@@ -45,85 +44,52 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileBacked.getSubtasks());
         System.out.println(fileBacked.getEpics());
         System.out.println(fileBacked.getHistory());
-        File doc = new File("backUp.csv");
+        File doc = new File(FILE_PATH);
         FileBackedTasksManager fileBacked2 = loadFromFile(doc);
+        System.out.println();
+        System.out.println("MANAGER FROM FILE");
+        System.out.println();
         System.out.println(fileBacked2.getTasks());
         System.out.println(fileBacked2.getSubtasks());
         System.out.println(fileBacked2.getEpics());
         System.out.println(fileBacked2.getHistory());
     }
 
-    public void save() {
-        try {
-            File backUp = new File(path);
-            PrintWriter pw = new PrintWriter(backUp);
-            pw.println("id,type,name,status,description,epic");
-            for (Task task : getTasks().values()) {
-                pw.println(taskToString(task));
-            }
-            for (Epic epic : getEpics().values()) {
-                pw.println(taskToString(epic));
-            }
-            for (Subtask subtask : getSubtasks().values()) {
-                pw.println(taskToString(subtask));
-            }
-            pw.println();
-            pw.println(historyToString(getHistoryManager()));
-            pw.close();
-        } catch (IOException exception) {
-            throw new ManagerSaveException("Что-то пошло не так с сохранением в backUp - файл");
-        }
+    public String getPath() {
+        return path;
     }
 
     public Task addBackedTask(String[] split) {
-        Task newTask = new Task(split[2], split[4], Task.Status.valueOf(split[3]));
-        getTasks().put(Integer.parseInt(split[0]), newTask);
-        newTask.setId(Integer.parseInt(split[0]));
-        return newTask;
-    }
-
-    public Task addBackedEpic(String[] split) {
-        Epic newEpic = new Epic(split[2], split[4], Task.Status.valueOf(split[3]));
-        getEpics().put(Integer.parseInt(split[0]), newEpic);
-        newEpic.setId(Integer.parseInt(split[0]));
-        return newEpic;
-    }
-
-    public Task addBackedSubtask(String[] split) {
-        int parentsId = Integer.parseInt(split[5]);
-        Epic parent = getEpics().get(parentsId);
-        Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]), parent);
-        getSubtasks().put(Integer.parseInt(split[0]), newSubTask);
-        newSubTask.setId(Integer.parseInt(split[0]));
-        parent.getChildSubtasks().add(newSubTask);
-        parent.checkStatus();
-        return newSubTask;
+        switch (split[1]) {
+            case "TASK":
+                Task newTask = new Task(split[2], split[4], Task.Status.valueOf(split[3]));
+                getTasks().put(Integer.parseInt(split[0]), newTask);
+                newTask.setId(Integer.parseInt(split[0]));
+                return newTask;
+            case "SUBTASK":
+                int parentsId = Integer.parseInt(split[5]);
+                Epic parent = getEpics().get(parentsId);
+                Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]), parent);
+                getSubtasks().put(Integer.parseInt(split[0]), newSubTask);
+                newSubTask.setId(Integer.parseInt(split[0]));
+                parent.getChildSubtasks().add(newSubTask);
+                parent.checkStatus();
+                return newSubTask;
+            default:
+                Epic newEpic = new Epic(split[2], split[4], Task.Status.valueOf(split[3]));
+                getEpics().put(Integer.parseInt(split[0]), newEpic);
+                newEpic.setId(Integer.parseInt(split[0]));
+                return newEpic;
+        }
     }
 
     public String taskToString(Task task) {
-        return String.join(",", Integer.toString(task.getId()), TaskType.TASK.toString(), task.getName(),
-                task.getStatus().toString(), task.getDescription());
-    }
-
-    public String taskToString(Subtask subtask) {
-        return String.join(",", Integer.toString(subtask.getId()), TaskType.SUBTASK.toString(), subtask.getName(),
-                subtask.getStatus().toString(), subtask.getDescription(), Integer.toString(subtask.getParent().getId()));
-    }
-
-    public String taskToString(Epic task) {
-        return String.join(",", Integer.toString(task.getId()), TaskType.EPIC.toString(), task.getName(),
-                task.getStatus().toString(), task.getDescription());
+        return task.toCsvString();
     }
 
     public Task taskFromString(String value) {
         String[] split = value.split(",");
-        if (split[1].equals(TaskType.TASK.toString())) {
-            return addBackedTask(split);
-        } else if (split[1].equals(TaskType.EPIC.toString())) {
-            return addBackedEpic(split);
-        } else {
-            return addBackedSubtask(split);
-        }
+        return addBackedTask(split);
     }
 
     public static String historyToString(HistoryManager manager) {
@@ -222,5 +188,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void updateSubtask(Subtask subtask) {
         super.updateSubtask(subtask);
         save();
+    }
+
+    private void save() {
+        try {
+            File backUp = new File(path);
+            PrintWriter pw = new PrintWriter(backUp);
+            pw.println("id,type,name,status,description,epic");
+            List<Task> allTaskSetValues = new ArrayList<>();
+            allTaskSetValues.addAll(new ArrayList<>(getTasks().values()));
+            allTaskSetValues.addAll(new ArrayList<>(getEpics().values()));
+            allTaskSetValues.addAll(new ArrayList<>(getSubtasks().values()));
+            for (Task task : allTaskSetValues) {
+                pw.println(taskToString(task));
+            }
+            pw.println();
+            pw.println(historyToString(getHistoryManager()));
+            pw.close();
+        } catch (IOException exception) {
+            throw new ManagerSaveException("Что-то пошло не так с сохранением в backUp - файл");
+        }
     }
 }
