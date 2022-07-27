@@ -16,13 +16,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private final String path;
 
+    static final String FILE_PATH = "backUp.csv";
+
     public FileBackedTasksManager(String path) {
         this.path = path;
     }
 
     public static void main(String[] args) {
 
-        final String FILE_PATH = "backUp.csv";
         FileBackedTasksManager fileBacked = new FileBackedTasksManager(FILE_PATH);
         Task newTask1 = new Task("first", "check", Task.Status.NEW);   //создать-добавить задачу
         fileBacked.addTask(newTask1);
@@ -83,35 +84,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    public String taskToString(Task task) {
-        return task.toCsvString();
-    }
-
     public Task taskFromString(String value) {
         String[] split = value.split(",");
         return addBackedTask(split);
-    }
-
-    public static String historyToString(HistoryManager manager) {
-        StringBuilder historyString = new StringBuilder();
-        List<Task> historyToString = manager.getHistory();
-        if (!historyToString.isEmpty()) {
-            for (Task taskFromHistory : historyToString) {
-                historyString.append(taskFromHistory.getId()).append(",");
-            }
-            return historyString.substring(0, historyString.length() - 1);
-        } else {
-            return "";
-        }
-    }
-
-    public static List<Integer> historyFromString(String value) {
-        List<Integer> splitList = new ArrayList<>();
-        String[] split = value.split(",");
-        for (String splitItem : split) {
-            splitList.add((Integer.parseInt(splitItem)));
-        }
-        return splitList;
     }
 
     public static FileBackedTasksManager loadFromFile(File file) {
@@ -200,7 +175,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             allTaskSetValues.addAll(new ArrayList<>(getEpics().values()));
             allTaskSetValues.addAll(new ArrayList<>(getSubtasks().values()));
             for (Task task : allTaskSetValues) {
-                pw.println(taskToString(task));
+                pw.println(task.toCsvString());
             }
             pw.println();
             pw.println(historyToString(getHistoryManager()));
@@ -208,5 +183,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         } catch (IOException exception) {
             throw new ManagerSaveException("Что-то пошло не так с сохранением в backUp - файл");
         }
+    }
+
+    private static String historyToString(HistoryManager manager) {
+        StringBuilder historyString = new StringBuilder();
+        List<Task> historyToString = manager.getHistory();
+        if (!historyToString.isEmpty()) {
+            for (Task taskFromHistory : historyToString) {
+                historyString.append(taskFromHistory.getId()).append(",");
+            }
+            return historyString.substring(0, historyString.length() - 1);
+        } else {
+            return "";
+        }
+    }
+
+    private static List<Integer> historyFromString(String value) {
+        List<Integer> splitList = new ArrayList<>();
+        String[] split = value.split(",");
+        for (String splitItem : split) {
+            splitList.add((Integer.parseInt(splitItem)));
+        }
+        return splitList;
     }
 }
