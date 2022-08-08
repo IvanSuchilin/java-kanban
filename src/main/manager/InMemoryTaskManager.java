@@ -1,4 +1,11 @@
-package manager;
+package main.manager;
+
+import main.manager.exception.TaskValidationException;
+import main.resources.TimeValidator;
+import main.task.Epic;
+import main.task.Subtask;
+import main.task.Task;
+import main.task.TaskType;
 
 import java.util.*;
 

@@ -1,4 +1,9 @@
-package manager;
+package main.manager;
+
+import main.task.Epic;
+import main.task.Subtask;
+import main.task.Task;
+import main.task.TaskType;
 
 import java.util.ArrayList;
 import java.util.List;

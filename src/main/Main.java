@@ -1,6 +1,8 @@
-import manager.*;
+package main;
 
-import task.*;
+import main.manager.*;
+
+import main.task.*;
 
 
 

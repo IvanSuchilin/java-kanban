@@ -1,12 +1,14 @@
-package manager;
+package test.task;
 
 
-import manager.FileBackedTasksManager;
-import manager.Managers;
-import manager.TaskManager;
-import org.junit.jupiter.api.Assertions;
+import main.manager.FileBackedTasksManager;
+import main.manager.Managers;
+import main.manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import main.task.Epic;
+import main.task.Subtask;
+import main.task.Task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

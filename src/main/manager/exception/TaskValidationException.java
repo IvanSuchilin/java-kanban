@@ -1,4 +1,4 @@
-package manager;
+package main.manager.exception;
 
 public class TaskValidationException extends RuntimeException {
 

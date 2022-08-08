@@ -1,4 +1,4 @@
-package manager;
+package main.task;
 
 import java.util.Objects;
 

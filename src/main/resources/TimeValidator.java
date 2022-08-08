@@ -1,4 +1,6 @@
-package manager;
+package main.resources;
+
+import main.task.Task;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,10 +32,10 @@ public class TimeValidator {
         return false;
     }
 
-    /*public static boolean validateTime (Task task, List<Task> prioritizedList) {
+    /*public static boolean validateTime (Task main.task, List<Task> prioritizedList) {
         List<Task> validatorPrioritizedList = prioritizedList;
-        LocalDateTime TargetStart = task.getStartTime();
-        LocalDateTime TargetEnd = task.getEndTime();
+        LocalDateTime TargetStart = main.task.getStartTime();
+        LocalDateTime TargetEnd = main.task.getEndTime();
         if (validatorPrioritizedList.size() == 0) {
             return true;
         }
