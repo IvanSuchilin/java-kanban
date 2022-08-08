@@ -1,8 +1,8 @@
-id,type,name,status,description,epic
-1,TASK,first,NEW,check
-2,TASK,second,IN_PROGRESS,check1
-3,EPIC,epicName1,IN_PROGRESS,try for check1
-4,SUBTASK,firstSubtask,DONE,first sub in epicTask1,3
-5,SUBTASK,secondSubtask,NEW,second sub in epicTask1,3
+id,type,name,status,description,startTime,duration,epic
+1,TASK,first,NEW,check,22.02.2022 22:22,60
+2,TASK,second,IN_PROGRESS,check1,22.02.2022 23:30,60
+3,EPIC,epicName1,IN_PROGRESS,try for check1,20.02.2022 22:30,360
+4,EPIC,epicName2,NEW,try for check1,null,null
+5,SUBTASK,thirdSubtask,IN_PROGRESS,sub in epicTask1,20.02.2022 22:30,360,3
 
 2,1,4

@@ -1,9 +1,5 @@
 package manager;
 
-import task.Epic;
-import task.Subtask;
-import task.Task;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,6 +14,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     static final String FILE_PATH = "backUp.csv";
 
+    public FileBackedTasksManager() {
+        path = FILE_PATH;
+    }
+
     public FileBackedTasksManager(String path) {
         this.path = path;
     }
@@ -25,17 +25,26 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static void main(String[] args) {
 
         FileBackedTasksManager fileBacked = new FileBackedTasksManager(FILE_PATH);
-        Task newTask1 = new Task("first", "check", Task.Status.NEW);   //создать-добавить задачу
+        Task newTask1 = new Task("first", "check",
+                Task.Status.NEW, "22.02.2022 22:22", 60);   //создать-добавить задачу
         fileBacked.addTask(newTask1);
-        Task newTask2 = new Task("second", "check1", Task.Status.IN_PROGRESS);
+        Task newTask2 = new Task("second", "check1",
+                Task.Status.IN_PROGRESS, "22.02.2022 23:30", 60);
         fileBacked.addTask(newTask2);
         Epic epic1 = new Epic("epicName1", "try for check1",       //эпик + 2 подзадачи
                 Task.Status.DONE);
         fileBacked.addEpic(epic1);
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.DONE, epic1);
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                Task.Status.DONE, "22.02.2022 22:30", 60, epic1);
         fileBacked.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.NEW, epic1);
+        Subtask subtask2 = new Subtask("thirdSubtask", "sub in epicTask1",
+                Task.Status.IN_PROGRESS, "20.02.2022 22:30", 360, epic1);
+        Epic epic2 = new Epic("epicName2", "try for check1",
+                Task.Status.DONE);
+        fileBacked.addEpic(epic2);
+
         fileBacked.addSubtask(subtask2);
+        //fileBacked.checkAllTime();
         fileBacked.getTaskById(1);
         fileBacked.getTaskById(2);
         fileBacked.getTaskById(1);
@@ -63,23 +72,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public Task addBackedTask(String[] split) {
         switch (split[1]) {
             case "TASK":
-                Task newTask = new Task(split[2], split[4], Task.Status.valueOf(split[3]));
+                Task newTask = new Task(split[2], split[4], Task.Status.valueOf(split[3]), split[5], Long.parseLong(split[6]));
                 getTasks().put(Integer.parseInt(split[0]), newTask);
                 newTask.setId(Integer.parseInt(split[0]));
                 return newTask;
             case "SUBTASK":
-                int parentsId = Integer.parseInt(split[5]);
+                int parentsId = Integer.parseInt(split[7]);
                 Epic parent = getEpics().get(parentsId);
-                Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]), parent);
+                Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]),split[5], Long.parseLong(split[6]), parent);
                 getSubtasks().put(Integer.parseInt(split[0]), newSubTask);
                 newSubTask.setId(Integer.parseInt(split[0]));
                 parent.getChildSubtasks().add(newSubTask);
                 parent.checkStatus();
+                parent.setEpicDuration();
                 return newSubTask;
             default:
                 Epic newEpic = new Epic(split[2], split[4], Task.Status.valueOf(split[3]));
                 getEpics().put(Integer.parseInt(split[0]), newEpic);
                 newEpic.setId(Integer.parseInt(split[0]));
+                //newEpic.setEpicDuration();
                 return newEpic;
         }
     }
@@ -169,7 +180,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try {
             File backUp = new File(path);
             PrintWriter pw = new PrintWriter(backUp);
-            pw.println("id,type,name,status,description,epic");
+            pw.println("id,type,name,status,description,startTime,duration,epic");
             List<Task> allTaskSetValues = new ArrayList<>();
             allTaskSetValues.addAll(new ArrayList<>(getTasks().values()));
             allTaskSetValues.addAll(new ArrayList<>(getEpics().values()));
