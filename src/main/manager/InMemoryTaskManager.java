@@ -11,7 +11,7 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private TreeSet<Task> taskSet = new TreeSet<>();
+    private final TreeSet<Task> taskSet = new TreeSet<>();
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
@@ -56,7 +56,7 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 subtask.setId(increaseCount());
                 subtasks.put(subtask.getId(), subtask);
-                taskSet.add((Task) subtask);
+                taskSet.add(subtask);
                 Epic epic = subtask.getParent();
                 epic.getChildSubtasks().add(subtask);
                 epic.checkStatus();
