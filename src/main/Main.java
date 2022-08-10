@@ -20,17 +20,18 @@ public class Main {
 
         tasksManager.addEpic(epic2);
 
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
-                Task.Status.DONE, "16.02.2022 22:30", 60, epic2);
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.DONE, "17.02.2022 15:22" , 360, epic2);
         tasksManager.addSubtask(subtask1);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.DONE, "16.02.2022 15:22" , 360, epic2);
+        tasksManager.addSubtask(subtask2);
 
-        Task newTask5 = new Task("newTask5", "check", Task.Status.NEW, "18.02.2022 18:22", 60);   //создать-добавить задачу
+        Task newTask5 = new Task("newTask5", "check", Task.Status.NEW, "18.02.2022 22:30", 60);   //создать-добавить задачу
 
         tasksManager.addTask(newTask5);
 
-        Task newTask6 = new Task("newTask6", "check", Task.Status.NEW, "17.02.2022 15:22", 360);   //создать-добавить задачу
+        //Task newTask6 = new Task("newTask6", "check", Task.Status.NEW, "17.02.2022 15:22", 360);   //создать-добавить задачу
 
-        tasksManager.addTask(newTask6);
+        //tasksManager.addTask(newTask6);
 
         System.out.println(tasksManager.getTaskSet());
 
@@ -66,6 +67,8 @@ public class Main {
         tasksManager.getTaskById(1);
 
         tasksManager.getTaskById(2);
+
+       // tasksManager.getHistory().remove(3);
 
         tasksManager.getTaskById(3);
 

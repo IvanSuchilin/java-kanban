@@ -1,160 +1,221 @@
 package test.task;
 
-
 import main.manager.FileBackedTasksManager;
-import main.manager.Managers;
+import main.manager.InMemoryTaskManager;
 import main.manager.TaskManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static main.task.Task.Status.*;
+
 import main.task.Epic;
 import main.task.Subtask;
-import main.task.Task;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
+
     private Epic epic;
-    FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
-    TaskManager tasksManager = Managers.getDefault();
+    private FileBackedTasksManager fileBackedTasksManager;
+    private TaskManager tasksManager;
 
     @BeforeEach
-    public void create (){
-         epic = new Epic("epicName1", "try for check1",
-                Task.Status.DONE);
-
+    public void create() {
+        fileBackedTasksManager = new FileBackedTasksManager();
+        tasksManager = new InMemoryTaskManager();
+        epic = new Epic("epicName1", "try for check1", DONE);
+        fileBackedTasksManager.addEpic(epic);
+        tasksManager.addEpic(epic);
     }
 
     @Test
-    public void shouldBeEpicStatusNewInEmpty (){
-        assertEquals(Task.Status.NEW, epic.getStatus(), "Wrong Status");
+    public void getStatusWithEmptySubtasks() {
+        assertEquals(NEW, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusNewWithSubtasksStatusNewFb (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.NEW, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithNewSubtasksFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                NEW, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.NEW,"16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                NEW, "16.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.NEW, epic.getStatus(), "Wrong Status");
+        assertEquals(NEW, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusNewWithSubtasksStatusNewTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.NEW, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithNewSubtasksTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                NEW, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.NEW, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                NEW, "16.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.NEW, epic.getStatus(), "Wrong Status");
+        assertEquals(NEW, epic.getStatus(), "Wrong Status");
     }
 
+
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusDoneFb (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.DONE, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithDoneSubtasksFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                DONE, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.DONE, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                DONE, "16.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.DONE, epic.getStatus(), "Wrong Status");
+        assertEquals(DONE, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusDoneTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.DONE, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithDoneSubtasksTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                DONE, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.DONE, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                DONE, "16.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.DONE, epic.getStatus(), "Wrong Status");
+        assertEquals(DONE, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusDoneNewFb (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.DONE, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithDoneNewSubtasksFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                DONE, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.NEW, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                NEW, "16.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusDoneNewTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.NEW,"17.02.2022 15:22" , 360, epic);
+    public void getStatusWithDoneNewSubtasks() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                NEW, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.DONE, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                DONE, "16.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressFb (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.IN_PROGRESS, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithInProgressSubtasksFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.IN_PROGRESS, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                IN_PROGRESS, "16.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.IN_PROGRESS, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithInProgressSubtasksTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.IN_PROGRESS, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                IN_PROGRESS, "16.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWith1SubtaskStatusNewTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.NEW, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithOneNewSubtasksTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                NEW, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        assertEquals(Task.Status.NEW, epic.getStatus(), "Wrong Status");
+        assertEquals(NEW, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWith1SubtaskStatusDoneTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.DONE, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithOneDoneSubtasksTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                DONE, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        assertEquals(Task.Status.DONE, epic.getStatus(), "Wrong Status");
+        assertEquals(DONE, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWith1SubtaskStatusInProgressTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.IN_PROGRESS, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithOneInProgressSubtasksTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressDoneFb (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.IN_PROGRESS, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithOneNewSubtasksFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                NEW, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.DONE, "16.02.2022 15:22" , 360, epic);
-        fileBackedTasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(NEW, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressDoneTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.IN_PROGRESS, "17.02.2022 15:22" , 360, epic);
-        tasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.DONE, "16.02.2022 15:22" , 360, epic);
-        tasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
-    }
-
-    @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressNewFb (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.IN_PROGRESS, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithOneDoneSubtasksFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                DONE, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.NEW, "16.02.2022 15:22" , 360, epic);
-        fileBackedTasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(DONE, epic.getStatus(), "Wrong Status");
     }
 
     @Test
-    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressNewTm (){
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1", Task.Status.IN_PROGRESS, "17.02.2022 15:22" , 360, epic);
+    public void getStatusWithOneInProgressSubtasksFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
+        fileBackedTasksManager.addSubtask(subtask1);
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+    }
+
+    @Test
+    public void getStatusWithThreeSubsFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
+        fileBackedTasksManager.addSubtask(subtask1);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                DONE, "16.02.2022 15:22", 360, epic);
+        fileBackedTasksManager.addSubtask(subtask2);
+        Subtask subtask3 = new Subtask("thirdSubtask", "third sub in epicTask1",
+                NEW, "15.02.2022 15:22", 360, epic);
+        fileBackedTasksManager.addSubtask(subtask3);
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+    }
+
+    @Test
+    public void getStatusWithThreeSubsTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1", Task.Status.NEW, "16.02.2022 15:22" , 360, epic);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                DONE, "16.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask2);
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        Subtask subtask3 = new Subtask("thirdSubtask", "third sub in epicTask1",
+                NEW, "15.02.2022 15:22", 360, epic);
+        fileBackedTasksManager.addSubtask(subtask3);
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+    }
+
+    @Test
+    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressNewFb() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
+        fileBackedTasksManager.addSubtask(subtask1);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                NEW, "16.02.2022 15:22", 360, epic);
+        fileBackedTasksManager.addSubtask(subtask2);
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+    }
+
+    @Test
+    public void shouldBeEpicStatusDoneWithSubtasksStatusInProgressNewTm() {
+        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
+                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
+        tasksManager.addSubtask(subtask1);
+        Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
+                NEW, "16.02.2022 15:22", 360, epic);
+        tasksManager.addSubtask(subtask2);
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
     }
 }

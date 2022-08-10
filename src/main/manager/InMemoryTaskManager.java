@@ -11,12 +11,11 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-
     private TreeSet<Task> taskSet = new TreeSet<>();
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
-    private static int count = 0;
+    private int count = 0;
 
     public HistoryManager getHistoryManager() {
         return historyManager;
@@ -102,7 +101,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTaskById(int id) {
         if (tasks.containsKey(id)) {
             historyManager.remove(id);
-            //Task taskRemove = tasks.get(id);
             taskSet.remove(tasks.get(id));
             tasks.remove(id);
         } else if (subtasks.containsKey(id)) {
@@ -120,35 +118,37 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.remove(id);
             epic.checkStatus();
             epic.setEpicDuration();
-        } else {
+        } else if (epics.containsKey(id)){
             Epic epic = epics.get(id);
             for (Subtask subtask : epic.getChildSubtasks()) {
                 historyManager.remove(subtask.getId());
-                taskSet.remove(subtasks.get(id));
+                taskSet.remove(subtask);
                 subtasks.remove(subtask.getId());
             }
             epic.getChildSubtasks().clear();
             historyManager.remove(id);
             epics.remove(id);
+        } else {
+            throw new IllegalArgumentException("Нет такого id");
         }
     }
 
     @Override
-    public ArrayList<String> getAllTypeTasksList(TaskType nameTaskTypeSet) {
-        ArrayList<String> tasksName = new ArrayList<>();
+    public List<Task> getAllTypeTasksList(TaskType nameTaskTypeSet) {
+        List<Task> tasksName = new ArrayList<>();
         if (nameTaskTypeSet.equals(TaskType.TASK)) {
             for (int key : tasks.keySet()) {
-                tasksName.add(tasks.get(key).toString());
+                tasksName.add(tasks.get(key));
             }
             return tasksName;
         } else if (nameTaskTypeSet.equals(TaskType.SUBTASK)) {
             for (int key : subtasks.keySet()) {
-                tasksName.add(subtasks.get(key).toString());
+                tasksName.add(subtasks.get(key));
             }
             return tasksName;
         } else {
             for (int key : epics.keySet()) {
-                tasksName.add(epics.get(key).toString());
+                tasksName.add(epics.get(key));
             }
             return tasksName;
         }

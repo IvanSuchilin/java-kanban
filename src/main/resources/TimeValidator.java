@@ -15,12 +15,12 @@ public class TimeValidator {
             return true;
         }
         if (validatorPrioritizedList.size() != 0) {
-            if (taskStartTime.isAfter(validatorPrioritizedList.get(validatorPrioritizedList.size() - 1).getEndTime())) {
-                return true;
-            }
             if (taskEndTime.isBefore(validatorPrioritizedList.get(0).getStartTime())) {
                 return true;
             }
+            if (taskStartTime.isAfter(validatorPrioritizedList.get(validatorPrioritizedList.size() - 1).getEndTime())) {
+                    return true;
+                }
             for (int i = 1; i < validatorPrioritizedList.size(); i++) {
                 LocalDateTime StartTimeCurrent = validatorPrioritizedList.get(i).getStartTime();
                 LocalDateTime EndTimePre = validatorPrioritizedList.get(i - 1).getEndTime();

@@ -44,7 +44,7 @@ public class Epic extends Task {
         return endTimeFromSubtasks;
     }
 
-    public void setEpicDuration(){
+    /*public void setEpicDuration(){
         if (getChildSubtasks().size() == 0){
             setStartTime(null);
             setDuration(null);
@@ -54,7 +54,21 @@ public class Epic extends Task {
             Duration epicDuration = Duration.between(startTime, endTime);
             setDuration(epicDuration);
         }
+    }*/
+
+    public void setEpicDuration() {
+        long epicDuration = 0;
+        if (getChildSubtasks().size() == 0) {
+            setStartTime(null);
+            setDuration(null);
+        } else {
+            for (Task subtask: getChildSubtasks()){
+                epicDuration += subtask.getDuration().toMinutes();
+            }
+            setDuration(Duration.ofMinutes(epicDuration));
+        }
     }
+
 
     @Override
     public LocalDateTime getStartTime() {
