@@ -14,8 +14,8 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-
     TreeSet<Task> getTaskSet();
+
     Map<Integer, Task> getTasks();
 
     Map<Integer, Epic> getEpics();
@@ -30,7 +30,7 @@ public interface TaskManager {
 
     void deleteTaskById(int id);
 
-    ArrayList<String> getAllTypeTasksList(TaskType nameTaskTypeSet);
+    List<Task> getAllTypeTasksList(TaskType nameTaskTypeSet);
 
     void deleteAllTasksFromSet(TaskType nameTasksSet);
 
@@ -43,5 +43,6 @@ public interface TaskManager {
     void updateSubtask(Subtask subtask);
 
     ArrayList<String> getTasksFromEpicTask(Epic epic);
+
     ArrayList<Task> getPrioritizedTasks();
 }
