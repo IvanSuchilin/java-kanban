@@ -1,9 +1,11 @@
 package main.manager;
 
+import main.manager.exception.ManagerLoadException;
 import main.manager.exception.ManagerSaveException;
 import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
+import main.task.TaskType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -108,19 +110,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fileBacked = new FileBackedTasksManager(file.getPath());
         List<Integer> splitList;
-        List<String> records = new ArrayList<>();
+        List<String> records = new ArrayList<>(1);
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 records.add(scanner.nextLine());
+            }
+            if (records.get(0).length() == 0){
+                throw new ManagerLoadException("Файл некорректно был сохранен, восстановление невозможно");
+            }
+            if (records.get(1).length() == 0){
+                return fileBacked;
             }
             for (int i = 1; i < records.size(); i++) {
                 if (!records.get(i).isEmpty()) {
                     fileBacked.taskFromString(records.get(i));
                 } else {
-                    splitList = historyFromString(records.get(i + 1));
-                    for (Integer id : splitList)
-                        fileBacked.getTaskById(id);
-                    break;
+                    if (records.get(i + 1).length() != 0) {
+                        splitList = historyFromString(records.get(i + 1));
+                        for (Integer id : splitList)
+                            fileBacked.getTaskById(id);
+                        break;
+                    } else {
+                        splitList = new ArrayList<>();
+                        return fileBacked;
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
@@ -157,6 +170,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
+    public void deleteAllTasksFromSet(TaskType nameTasksSet) {
+        super.deleteAllTasksFromSet(nameTasksSet);
+        save();
+    }
+
+    @Override
     public Task getTaskById(int id) {
         super.getTaskById(id);
         save();
@@ -179,6 +198,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void updateSubtask(Subtask subtask) {
         super.updateSubtask(subtask);
         save();
+    }
+
+    @Override
+    public ArrayList<Task> getPrioritizedTasks() {
+        return super.getPrioritizedTasks();
     }
 
     private void save() {

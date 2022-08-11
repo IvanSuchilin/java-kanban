@@ -1,10 +1,9 @@
 package main.manager.exception;
 
-public class TaskValidationException extends RuntimeException {
-
+public class ManagerLoadException extends RuntimeException {
     private final String message;
 
-    public TaskValidationException(String message) {
+    public ManagerLoadException(String message) {
         this.message = message;
     }
 

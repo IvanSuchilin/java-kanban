@@ -43,6 +43,4 @@ public interface TaskManager {
     void updateSubtask(Subtask subtask);
 
     ArrayList<String> getTasksFromEpicTask(Epic epic);
-
-    ArrayList<Task> getPrioritizedTasks();
 }
