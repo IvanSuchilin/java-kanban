@@ -4,9 +4,6 @@ import main.manager.TaskManager;
 import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
-
-import main.task.Task.Status;
-
 import main.task.TaskType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,15 +16,14 @@ import static main.task.Task.Status.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static main.task.Task.Status.DONE;
-import static main.task.Task.Status.NEW;
-import static org.junit.jupiter.api.Assertions.*;
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public abstract class TaskManagerTest <T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
 
-    protected  T taskManager;
+    protected T taskManager;
 
     @BeforeEach
     void setUp() {
@@ -77,7 +73,6 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         assertEquals(subtask2, tasksForValidation.first(), "Неверная задача.");
         taskManager.deleteTaskById(4);
         assertEquals(subtask3, tasksForValidation.first(), "Неверная задача.");
-
     }
 
     @Test
@@ -88,7 +83,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         Task task2 = new Task("task#2", "taskForCheck", Task.Status.DONE,
                 "24.02.2022 07:00", 60);
         taskManager.addTask(task2);
-        Map<Integer,Task> tasks = taskManager.getTasks();
+        Map<Integer, Task> tasks = taskManager.getTasks();
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(2, tasks.size(), "Неверное количество задач.");
         assertEquals(task1, tasks.get(1), "Задачи не совпадают.");
@@ -101,13 +96,13 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         taskManager.addEpic(epic1);
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
         taskManager.addEpic(epic2);
-        Map<Integer,Epic> epics = taskManager.getEpics();
+        Map<Integer, Epic> epics = taskManager.getEpics();
         assertNotNull(epics, "Задачи не возвращаются.");
         assertEquals(2, epics.size(), "Неверное количество задач.");
         assertEquals(epic1, epics.get(1), "Задачи не совпадают.");
         assertEquals(epic2, epics.get(2), "Задачи не совпадают.");
-        assertEquals(NEW,epic1.getStatus(), "Статус эпика  неверный");
-        assertEquals(NEW,epic2.getStatus(), "Статус эпика  неверный");
+        assertEquals(NEW, epic1.getStatus(), "Статус эпика  неверный");
+        assertEquals(NEW, epic2.getStatus(), "Статус эпика  неверный");
     }
 
     @Test
@@ -123,7 +118,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
                 NEW, "16.02.2022 15:22", 360, epic1);
         taskManager.addSubtask(subtask2);
-        Map<Integer,Subtask> subtasks = taskManager.getSubtasks();
+        Map<Integer, Subtask> subtasks = taskManager.getSubtasks();
         assertNotNull(subtasks, "Задачи не возвращаются.");
         assertEquals(3, subtasks.size(), "Неверное количество задач.");
         assertEquals(subtask3, subtasks.get(3), "Задачи не совпадают.");
@@ -145,14 +140,14 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         assertNotNull(tasks, "Задачи на возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(subtask1, tasks.get(0), "Задачи не совпадают.");
-        assertEquals(DONE,epic1.getStatus(), "Статус эпика при добавлении подзадачи неверный");
+        assertEquals(DONE, epic1.getStatus(), "Статус эпика при добавлении подзадачи неверный");
         assertEquals(epic1, subtask1.getParent(), "Родитель подзадачи не совпадает");
     }
 
     @Test
     void addTask() {
         Task task = new Task("task#1", "taskForCheck", NEW,
-                "24.02.2022 05:00", 60);;
+                "24.02.2022 05:00", 60);
         Task taskWithId = taskManager.addTask(task);
         final int taskId = taskWithId.getId();
         final Task savedTask = taskManager.getTasks().get(taskId);
@@ -187,18 +182,18 @@ public abstract class TaskManagerTest <T extends TaskManager> {
                 DONE, "22.02.2022 22:30", 60, epic1);
         taskManager.addSubtask(subtask1);
         taskManager.deleteTaskById(1);
-        assertEquals(0,taskManager.getEpics().size(), "Эпик не удален");
-        assertEquals(0,taskManager.getSubtasks().size(), "Эпик с подзадачей не удален");
+        assertEquals(0, taskManager.getEpics().size(), "Эпик не удален");
+        assertEquals(0, taskManager.getSubtasks().size(), "Эпик с подзадачей не удален");
     }
 
     @Test
     void deleteTaskByIdTask() {
         Task task = new Task("task#1", "taskForCheck", NEW,
-                "24.02.2022 05:00", 60);;
+                "24.02.2022 05:00", 60);
         taskManager.addTask(task);
-        assertEquals(1,taskManager.getTasks().size(), "Задача не добавлена");
+        assertEquals(1, taskManager.getTasks().size(), "Задача не добавлена");
         taskManager.deleteTaskById(1);
-        assertEquals(0,taskManager.getTasks().size(), "Задача не удалена");
+        assertEquals(0, taskManager.getTasks().size(), "Задача не удалена");
     }
 
     @Test
@@ -210,9 +205,9 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         taskManager.addSubtask(subtask1);
         taskManager.deleteTaskById(2);
         int sizeChild = taskManager.getEpics().get(1).getChildSubtasks().size();
-        assertEquals(0,sizeChild, "Список подзадач не пуст");
-        assertEquals(0,taskManager.getSubtasks().size(), "Подзадача не удалена");
-        assertEquals(NEW,epic1.getStatus(), "Статус эпика при удалении подзадачи неверный");
+        assertEquals(0, sizeChild, "Список подзадач не пуст");
+        assertEquals(0, taskManager.getSubtasks().size(), "Подзадача не удалена");
+        assertEquals(NEW, epic1.getStatus(), "Статус эпика при удалении подзадачи неверный");
     }
 
     @Test
@@ -224,7 +219,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
                     DONE, "22.02.2022 22:30", 60, epic1);
             taskManager.addSubtask(subtask1);
             taskManager.deleteTaskById(3);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             assertNotEquals("", e.getMessage());
         }
     }
@@ -247,7 +242,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         assertEquals(3, subtasksList.size(), "Неверное количество задач.");
         assertEquals(subtask1, subtasksList.get(0), "Задачи не совпадают.");
         assertEquals(subtask3, subtasksList.get(1), "Задачи не совпадают.");
-        assertEquals(IN_PROGRESS,epic1.getStatus(), "Статус эпика неверный");
+        assertEquals(IN_PROGRESS, epic1.getStatus(), "Статус эпика неверный");
     }
 
     @Test
@@ -317,11 +312,46 @@ public abstract class TaskManagerTest <T extends TaskManager> {
     }
 
     @Test
-    void getTaskById() {
+    void getTaskByWrongId() throws CloneNotSupportedException {
+        try {
+            Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
+            taskManager.addEpic(epic1);
+            Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
+                    DONE, "22.02.2022 22:30", 60, epic1);
+            taskManager.addSubtask(subtask1);
+            taskManager.getTaskById(3);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Нет такого id", e.getMessage());
+        }
+    }
+
+    @Test
+    void getTaskById() throws CloneNotSupportedException {
+        Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
+        taskManager.addEpic(epic1);
+        Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "22.02.2022 22:30", 60, epic1);
+        taskManager.addSubtask(subtask1);
+        Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
+                "24.02.2022 05:00", 60);
+        taskManager.addTask(task1);
+        Task subtask = taskManager.getTaskById(2);
+        Task task = taskManager.getTaskById(3);
+        Task epic = taskManager.getTaskById(1);
+        assertEquals(subtask, subtask1, "Задачи не равны");
+        assertEquals(task, task1, "Задачи не равны");
+        assertEquals(epic, epic1, "Задачи не равны");
     }
 
     @Test
     void updateEpic() {
+        Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
+        taskManager.addEpic(epic1);
+        String nameFirst = epic1.getDescription();
+        epic1.setDescription("newDescription");
+        assertEquals("epicForCheck",nameFirst, "Описание не совпадает");
+        taskManager.updateEpic(epic1);
+        assertEquals("newDescription",epic1.getDescription(), "Описание не совпадает");
     }
 
     @Test
@@ -330,6 +360,16 @@ public abstract class TaskManagerTest <T extends TaskManager> {
 
     @Test
     void updateSubtask() {
+        Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
+        taskManager.addEpic(epic1);
+        Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "22.02.2022 22:30", 60, epic1);
+        taskManager.addSubtask(subtask1);
+        assertEquals(DONE,epic1.getStatus(), "Статус эпика неверный");
+        subtask1.changeStatus(IN_PROGRESS);
+        assertEquals(DONE,epic1.getStatus(), "Статус эпика неверный");
+        taskManager.updateSubtask(subtask1);
+        assertEquals(IN_PROGRESS,epic1.getStatus(), "Статус эпика неверный");
     }
 
     @Test

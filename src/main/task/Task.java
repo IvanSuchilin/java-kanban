@@ -58,7 +58,13 @@ public class Task implements Comparable <Task> {
         }
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public DateTimeFormatter getFormatter() {
         return formatter;

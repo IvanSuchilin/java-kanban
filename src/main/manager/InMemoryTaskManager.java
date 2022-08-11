@@ -194,9 +194,11 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (subtasks.containsKey(id)) {
             historyManager.add(subtasks.get(id));
             return subtasks.get(id);
-        } else {
+        } else if(epics.containsKey(id)) {
             historyManager.add(epics.get(id));
             return epics.get(id);
+        } else {
+            throw new IllegalArgumentException("Нет такого id");
         }
     }
 
