@@ -1,4 +1,13 @@
 id,type,name,status,description,startTime,duration,epic
+<<<<<<< HEAD
 1,EPIC,epicName1,NEW,try for check1,null,null
 
+=======
+1,TASK,first,NEW,check,22.02.2022 22:22,60
+2,TASK,second,IN_PROGRESS,check1,22.02.2022 23:30,60
+3,EPIC,epicName1,IN_PROGRESS,try for check1,02.02.2022 22:30,420
+5,EPIC,epicName2,NEW,try for check1,null,null
+4,SUBTASK,firstSubtask,DONE,first sub in epicTask1,02.02.2022 22:30,60,3
+6,SUBTASK,thirdSubtask,IN_PROGRESS,sub in epicTask1,20.02.2022 22:30,360,3
+>>>>>>> 461272b6c45026bbaf723b129fa1949bc712e4d7
 

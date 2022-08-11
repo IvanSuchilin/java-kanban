@@ -40,7 +40,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 Task.Status.DONE);
         fileBacked.addEpic(epic1);
         Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
-                Task.Status.DONE, "22.02.2022 22:30", 60, epic1);
+                Task.Status.DONE, "02.02.2022 22:30", 60, epic1);
         fileBacked.addSubtask(subtask1);
         Subtask subtask2 = new Subtask("thirdSubtask", "sub in epicTask1",
                 Task.Status.IN_PROGRESS, "20.02.2022 22:30", 360, epic1);

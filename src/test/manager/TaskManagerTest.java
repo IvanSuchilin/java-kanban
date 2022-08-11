@@ -4,6 +4,9 @@ import main.manager.TaskManager;
 import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
+
+import main.task.Task.Status;
+
 import main.task.TaskType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 import static main.task.Task.Status.*;
+
 import static org.junit.jupiter.api.Assertions.*;
+
+import static main.task.Task.Status.DONE;
+import static main.task.Task.Status.NEW;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public abstract class TaskManagerTest <T extends TaskManager> {
 
@@ -35,7 +45,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);
         taskManager.addTask(task1);
-        Task task2 = new Task("task#2", "taskForCheck", DONE,
+        Task task2 = new Task("task#2", "taskForCheck", Task.Status.DONE,
                 "24.02.2022 07:00", 60);
         taskManager.addTask(task2);
         Map<Integer,Task> tasks = taskManager.getTasks();
@@ -244,7 +254,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);
         taskManager.addTask(task1);
-        Task task2 = new Task("task#2", "taskForCheck", DONE,
+        Task task2 = new Task("task#2", "taskForCheck", Task.Status.DONE,
                 "24.02.2022 07:00", 60);
         taskManager.addTask(task2);
         List<Task> tasksList = taskManager.getAllTypeTasksList(TaskType.TASK);
@@ -273,7 +283,7 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);
         taskManager.addTask(task1);
-        Task task2 = new Task("task#2", "taskForCheck", DONE,
+        Task task2 = new Task("task#2", "taskForCheck", Task.Status.DONE,
                 "24.02.2022 07:00", 60);
         taskManager.addTask(task2);
         taskManager.deleteAllTasksFromSet(TaskType.TASK);
