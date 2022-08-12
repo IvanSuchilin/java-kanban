@@ -26,25 +26,25 @@ class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager
 
         File doc = new File(FILE_PATH);
         taskManager = new FileBackedTasksManager(FILE_PATH);
-        Epic epic1 = new Epic("epic#11", "epicForCheck", IN_PROGRESS);
-        taskManager.addEpic(epic1);
-        Epic epic2 = new Epic("epic#222", "epicForCheck", NEW);
-        taskManager.addEpic(epic2);
-        Subtask subtask1 = new Subtask("subtask#11", "subtaskForCheck",
-                DONE, "12.02.2022 22:30", 60, epic2);
-        taskManager.addSubtask(subtask1);
-        Subtask subtask3 = new Subtask("subtask#11", "subtaskForCheck",
-                IN_PROGRESS, "27.02.2022 22:30", 60, epic1);
-        taskManager.addSubtask(subtask3);
-        Subtask subtask2 = new Subtask("subtask#22", "subtaskForCheck",
-                NEW, "06.02.2022 15:22", 360, epic1);
-        taskManager.addSubtask(subtask2);
-        Task task1 = new Task("task#11", "taskForCheck", Task.Status.NEW,
+        Epic epic1fb = new Epic("epic#11", "epicForCheck", IN_PROGRESS);
+        taskManager.addEpic(epic1fb);
+        Epic epic2Fb = new Epic("epic#222", "epicForCheck", NEW);
+        taskManager.addEpic(epic2Fb);
+        Subtask subtask1Fb = new Subtask("subtask#11", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, epic2Fb);
+        taskManager.addSubtask(subtask1Fb);
+        Subtask subtask3Fb = new Subtask("subtask#11", "subtaskForCheck",
+                IN_PROGRESS, "27.02.2022 22:30", 60, epic1fb);
+        taskManager.addSubtask(subtask3Fb);
+        Subtask subtask2Fb = new Subtask("subtask#22", "subtaskForCheck",
+                NEW, "06.02.2022 15:22", 360, epic1fb);
+        taskManager.addSubtask(subtask2Fb);
+        Task task1Fb = new Task("task#11", "taskForCheck", Task.Status.NEW,
                 "11.02.2022 05:00", 60);
-        taskManager.addTask(task1);
-        Task task2 = new Task("task#22", "taskForCheck", Task.Status.DONE,
+        taskManager.addTask(task1Fb);
+        Task task2FB = new Task("task#22", "taskForCheck", Task.Status.DONE,
                 "15.02.2022 07:00", 60);
-        taskManager.addTask(task2);
+        taskManager.addTask(task2FB);
         taskManager.getTaskById(7);
         taskManager.getTaskById(3);
         taskManager.getTaskById(2);
@@ -53,17 +53,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager
         taskManager.getTaskById(6);
         taskManager.getTaskById(1);
         taskManager.getTaskById(4);
-        /*taskManager.deleteAllTasksFromSet(TaskType.TASK);
-        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
-        taskManager.deleteAllTasksFromSet(TaskType.EPIC);*/
     }
-
-    /*@AfterEach
-    void clear(){
-        taskManager.deleteAllTasksFromSet(TaskType.TASK);
-        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
-        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
-    }*/
 
     @Test
     void getPath() {
@@ -81,10 +71,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager
 
     @Test
     void loadFromFile() {
-        assertEquals(2, taskManager.getTasks().size(), "Неверное количество задач.");
-        assertEquals(3, taskManager.getSubtasks().size(), "Неверное количество задач.");
-        assertEquals(2, taskManager.getEpics().size(), "Неверное количество задач.");
-        assertEquals(7, taskManager.getHistory().size(), "Неверное количество задач.");
         File doc = new File(FILE_PATH);
         FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
         assertEquals(newFileManager.getTasks().size(), taskManager.getTasks().size(), "Неверное количество задач.");

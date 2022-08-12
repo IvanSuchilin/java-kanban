@@ -51,7 +51,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileBacked.addEpic(epic2);
 
         fileBacked.addSubtask(subtask2);
-        //fileBacked.checkAllTime();
         fileBacked.getTaskById(1);
         fileBacked.getTaskById(2);
         fileBacked.getTaskById(1);

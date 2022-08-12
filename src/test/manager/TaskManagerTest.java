@@ -29,9 +29,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @BeforeEach
     void setUp() {
-        taskManager.deleteAllTasksFromSet(TaskType.TASK);
-        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
-        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
     }
 
     /*@AfterEach
@@ -43,6 +40,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getHistory() throws CloneNotSupportedException {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
+        //taskManager.setCount(0);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -54,20 +55,23 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
                 NEW, "16.02.2022 15:22", 360, epic1);
         taskManager.addSubtask(subtask2);
-        taskManager.getTaskById(1);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(3);
-        taskManager.getTaskById(4);
+        taskManager.getTaskById(epic1.getId());
+        taskManager.getTaskById(subtask1.getId());
+        taskManager.getTaskById(subtask3.getId());
+        taskManager.getTaskById(subtask2.getId());
         List<Task> history = taskManager.getHistory();
         assertNotNull(history, "Задачи не возвращаются.");
         assertEquals(4, history.size(), "Неверное количество задач.");
-        taskManager.deleteTaskById(1);
+        taskManager.deleteTaskById(epic1.getId());
         List<Task> historyAfterDelete = taskManager.getHistory();
         assertEquals(0, historyAfterDelete.size(), "Неверное количество задач.");
     }
 
     @Test
     void getTaskSet() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -83,12 +87,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNotNull(tasksForValidation, "Задачи не возвращаются.");
         assertEquals(3, tasksForValidation.size(), "Неверное количество задач.");
         assertEquals(subtask2, tasksForValidation.first(), "Неверная задача.");
-        taskManager.deleteTaskById(4);
+        taskManager.deleteTaskById(subtask2.getId());
         assertEquals(subtask3, tasksForValidation.first(), "Неверная задача.");
     }
 
     @Test
     void getTasks() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);
         taskManager.addTask(task1);
@@ -98,12 +105,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Map<Integer, Task> tasks = taskManager.getTasks();
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(2, tasks.size(), "Неверное количество задач.");
-        assertEquals(task1, tasks.get(1), "Задачи не совпадают.");
-        assertEquals(task2, tasks.get(2), "Задачи не совпадают.");
+        assertEquals(task1, tasks.get(task1.getId()), "Задачи не совпадают.");
+        assertEquals(task2, tasks.get(task2.getId()), "Задачи не совпадают.");
     }
 
     @Test
     void getEpics() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
@@ -111,14 +121,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Map<Integer, Epic> epics = taskManager.getEpics();
         assertNotNull(epics, "Задачи не возвращаются.");
         assertEquals(2, epics.size(), "Неверное количество задач.");
-        assertEquals(epic1, epics.get(1), "Задачи не совпадают.");
-        assertEquals(epic2, epics.get(2), "Задачи не совпадают.");
+        assertEquals(epic1, epics.get(epic1.getId()), "Задачи не совпадают.");
+        assertEquals(epic2, epics.get(epic2.getId()), "Задачи не совпадают.");
         assertEquals(NEW, epic1.getStatus(), "Статус эпика  неверный");
         assertEquals(NEW, epic2.getStatus(), "Статус эпика  неверный");
     }
 
     @Test
     void getSubtasks() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -133,12 +146,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Map<Integer, Subtask> subtasks = taskManager.getSubtasks();
         assertNotNull(subtasks, "Задачи не возвращаются.");
         assertEquals(3, subtasks.size(), "Неверное количество задач.");
-        assertEquals(subtask3, subtasks.get(3), "Задачи не совпадают.");
-        assertEquals(subtask2, subtasks.get(4), "Задачи не совпадают.");
+        assertEquals(subtask3, subtasks.get(subtask3.getId()), "Задачи не совпадают.");
+        assertEquals(subtask2, subtasks.get(subtask2.getId()), "Задачи не совпадают.");
     }
 
     @Test
     void addSubtask() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -158,6 +174,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void addTask() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Task task = new Task("task#1", "taskForCheck", NEW,
                 "24.02.2022 05:00", 60);
         Task taskWithId = taskManager.addTask(task);
@@ -174,6 +193,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void addEpic() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         Task taskWithId = taskManager.addEpic(epic1);
         final int taskId = taskWithId.getId();
@@ -188,35 +210,44 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteTaskByIdEpic() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
                 DONE, "22.02.2022 22:30", 60, epic1);
         taskManager.addSubtask(subtask1);
-        taskManager.deleteTaskById(1);
+        taskManager.deleteTaskById(epic1.getId());
         assertEquals(0, taskManager.getEpics().size(), "Эпик не удален");
         assertEquals(0, taskManager.getSubtasks().size(), "Эпик с подзадачей не удален");
     }
 
     @Test
     void deleteTaskByIdTask() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Task task = new Task("task#1", "taskForCheck", NEW,
                 "24.02.2022 05:00", 60);
         taskManager.addTask(task);
         assertEquals(1, taskManager.getTasks().size(), "Задача не добавлена");
-        taskManager.deleteTaskById(1);
+        taskManager.deleteTaskById(task.getId());
         assertEquals(0, taskManager.getTasks().size(), "Задача не удалена");
     }
 
     @Test
     void deleteTaskByIdSubtask() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
                 NEW, "22.02.2022 22:30", 60, epic1);
         taskManager.addSubtask(subtask1);
-        taskManager.deleteTaskById(2);
-        int sizeChild = taskManager.getEpics().get(1).getChildSubtasks().size();
+        taskManager.deleteTaskById(subtask1.getId());
+        int sizeChild = taskManager.getEpics().get(epic1.getId()).getChildSubtasks().size();
         assertEquals(0, sizeChild, "Список подзадач не пуст");
         assertEquals(0, taskManager.getSubtasks().size(), "Подзадача не удалена");
         assertEquals(NEW, epic1.getStatus(), "Статус эпика при удалении подзадачи неверный");
@@ -224,6 +255,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteTaskByWrongId() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         try {
             Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
             taskManager.addEpic(epic1);
@@ -238,6 +272,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getAllTypeTasksListSub() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -259,6 +296,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getAllTypeTasksListEpic() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
@@ -281,6 +321,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getAllTypeTasksListTask() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);
         taskManager.addTask(task1);
@@ -296,6 +339,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteAllTasksFromSet() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
@@ -325,6 +371,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getTaskByWrongId() throws CloneNotSupportedException {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         try {
             Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
             taskManager.addEpic(epic1);
@@ -339,6 +388,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getTaskById() throws CloneNotSupportedException {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -347,9 +399,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);
         taskManager.addTask(task1);
-        Task subtask = taskManager.getTaskById(2);
-        Task task = taskManager.getTaskById(3);
-        Task epic = taskManager.getTaskById(1);
+        Task subtask = taskManager.getTaskById(subtask1.getId());
+        Task task = taskManager.getTaskById(task1.getId());
+        Task epic = taskManager.getTaskById(epic1.getId());
         assertEquals(subtask, subtask1, "Задачи не равны");
         assertEquals(task, task1, "Задачи не равны");
         assertEquals(epic, epic1, "Задачи не равны");
@@ -357,6 +409,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateEpic() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         String nameFirst = epic1.getDescription();
@@ -372,6 +427,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateSubtask() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -386,6 +444,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getTasksFromEpic() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
