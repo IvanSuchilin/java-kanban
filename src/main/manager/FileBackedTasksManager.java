@@ -18,7 +18,6 @@ import java.util.Scanner;
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private final String path;
-
     static final String FILE_PATH = "backUp.csv";
 
     public FileBackedTasksManager() {
@@ -29,53 +28,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.path = path;
     }
 
-    public static void main(String[] args) {
-
-        FileBackedTasksManager fileBacked = new FileBackedTasksManager(FILE_PATH);
-        Task newTask1 = new Task("first", "check",
-                Task.Status.NEW, "22.02.2022 22:22", 60);   //создать-добавить задачу
-        fileBacked.addTask(newTask1);
-        Task newTask2 = new Task("second", "check1",
-                Task.Status.IN_PROGRESS, "22.02.2022 23:30", 60);
-        fileBacked.addTask(newTask2);
-        Epic epic1 = new Epic("epicName1", "try for check1",       //эпик + 2 подзадачи
-                Task.Status.DONE);
-        fileBacked.addEpic(epic1);
-        Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
-                Task.Status.DONE, "02.02.2022 22:30", 60, epic1);
-        fileBacked.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("thirdSubtask", "sub in epicTask1",
-                Task.Status.IN_PROGRESS, "20.02.2022 22:30", 360, epic1);
-        Epic epic2 = new Epic("epicName2", "try for check1",
-                Task.Status.DONE);
-        fileBacked.addEpic(epic2);
-
-        fileBacked.addSubtask(subtask2);
-        fileBacked.getTaskById(1);
-        fileBacked.getTaskById(2);
-        fileBacked.getTaskById(1);
-        fileBacked.getTaskById(4);
-        //проверка
-        System.out.println(fileBacked.getTasks());
-        System.out.println(fileBacked.getSubtasks());
-        System.out.println(fileBacked.getEpics());
-        System.out.println(fileBacked.getHistory());
-        File doc = new File(FILE_PATH);
-        FileBackedTasksManager fileBacked2 = loadFromFile(doc);
-        System.out.println();
-        System.out.println("MANAGER FROM FILE");
-        System.out.println();
-        System.out.println(fileBacked2.getTasks());
-        System.out.println(fileBacked2.getSubtasks());
-        System.out.println(fileBacked2.getEpics());
-        System.out.println(fileBacked2.getHistory());
-    }
-
     public String getPath() {
         return path;
     }
 
-    public Task addBackedTask(String[] split) {
+    private Task addBackedTask(String[] split) {
         switch (split[1]) {
             case "TASK":
                 Task newTask = new Task(split[2], split[4], Task.Status.valueOf(split[3]), split[5], Long.parseLong(split[6]));
@@ -85,7 +42,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             case "SUBTASK":
                 int parentsId = Integer.parseInt(split[7]);
                 Epic parent = getEpics().get(parentsId);
-                Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]),split[5], Long.parseLong(split[6]), parent);
+                Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]), split[5], Long.parseLong(split[6]), parent);
                 getSubtasks().put(Integer.parseInt(split[0]), newSubTask);
                 newSubTask.setId(Integer.parseInt(split[0]));
                 parent.getChildSubtasks().add(newSubTask);
@@ -96,7 +53,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 Epic newEpic = new Epic(split[2], split[4], Task.Status.valueOf(split[3]));
                 getEpics().put(Integer.parseInt(split[0]), newEpic);
                 newEpic.setId(Integer.parseInt(split[0]));
-                //newEpic.setEpicDuration();
                 return newEpic;
         }
     }
@@ -114,10 +70,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             while (scanner.hasNextLine()) {
                 records.add(scanner.nextLine());
             }
-            if (records.get(0).length() == 0){
+            if (records.get(0).length() == 0) {
                 throw new ManagerLoadException("Файл некорректно был сохранен, восстановление невозможно");
             }
-            if (records.get(1).length() == 0){
+            if (records.get(1).length() == 0) {
                 return fileBacked;
             }
             for (int i = 1; i < records.size(); i++) {

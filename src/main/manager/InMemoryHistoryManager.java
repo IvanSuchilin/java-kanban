@@ -4,8 +4,8 @@ import main.task.Task;
 
 import java.util.*;
 
-
 public class InMemoryHistoryManager implements HistoryManager {
+
     private final Map<Integer, Node> nodeMap = new HashMap<>();
     private Node head;
     private Node tail;

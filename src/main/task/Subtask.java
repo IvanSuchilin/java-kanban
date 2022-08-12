@@ -33,10 +33,6 @@ public class Subtask extends Task {
                 '}';
     }
 
-    public Epic getParent() {
-        return parent;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,5 +45,9 @@ public class Subtask extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), parent);
+    }
+
+    public Epic getParent() {
+        return parent;
     }
 }

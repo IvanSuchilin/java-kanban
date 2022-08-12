@@ -5,7 +5,6 @@ import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
 import main.task.TaskType;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +14,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import static main.task.Task.Status.*;
-
 import static org.junit.jupiter.api.Assertions.*;
-
-
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public abstract class TaskManagerTest<T extends TaskManager> {
@@ -31,19 +25,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void setUp() {
     }
 
-    /*@AfterEach
-    void clear(){
-        taskManager.deleteAllTasksFromSet(TaskType.TASK);
-        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
-        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
-    }*/
-
     @Test
     void getHistory() throws CloneNotSupportedException {
         taskManager.deleteAllTasksFromSet(TaskType.TASK);
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
-        //taskManager.setCount(0);
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
@@ -416,13 +402,22 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addEpic(epic1);
         String nameFirst = epic1.getDescription();
         epic1.setDescription("newDescription");
-        assertEquals("epicForCheck",nameFirst, "Описание не совпадает");
+        assertEquals("epicForCheck", nameFirst, "Описание не совпадает");
         taskManager.updateEpic(epic1);
-        assertEquals("newDescription",epic1.getDescription(), "Описание не совпадает");
+        assertEquals("newDescription", epic1.getDescription(), "Описание не совпадает");
     }
 
     @Test
     void updateTask() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
+        Task taskFOrUpdate = new Task("taskFOrUpdate", "taskFOrUpdate", Task.Status.NEW,
+                "11.08.2022 05:00", 60);
+        taskManager.addTask(taskFOrUpdate);
+        taskFOrUpdate.setDescription("newDescription");
+        taskManager.updateTask(taskFOrUpdate);
+        assertEquals("newDescription", taskFOrUpdate.getDescription(), "Описание не совпадает");
     }
 
     @Test
@@ -435,11 +430,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
                 DONE, "22.02.2022 22:30", 60, epic1);
         taskManager.addSubtask(subtask1);
-        assertEquals(DONE,epic1.getStatus(), "Статус эпика неверный");
+        assertEquals(DONE, epic1.getStatus(), "Статус эпика неверный");
         subtask1.changeStatus(IN_PROGRESS);
-        assertEquals(DONE,epic1.getStatus(), "Статус эпика неверный");
+        assertEquals(DONE, epic1.getStatus(), "Статус эпика неверный");
         taskManager.updateSubtask(subtask1);
-        assertEquals(IN_PROGRESS,epic1.getStatus(), "Статус эпика неверный");
+        assertEquals(IN_PROGRESS, epic1.getStatus(), "Статус эпика неверный");
     }
 
     @Test

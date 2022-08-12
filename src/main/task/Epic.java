@@ -3,6 +3,7 @@ package main.task;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Epic extends Task {
@@ -24,7 +25,7 @@ public class Epic extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +
                 ", status=" + getStatus() + '\'' +
-               // Arrays.toString(new ArrayList[]{childSubtasks}) + '\'' +
+                Arrays.toString(new ArrayList[]{childSubtasks}) + '\'' +
                 ", startTime=" + getStartTime() +
                 '}';
     }
@@ -33,42 +34,16 @@ public class Epic extends Task {
     public LocalDateTime getEndTime() {
         LocalDateTime endTimeFromSubtasks = null;
         for (Subtask task : childSubtasks) {
-            if (endTimeFromSubtasks == null){
+            if (endTimeFromSubtasks == null) {
                 endTimeFromSubtasks = task.getEndTime();
-        } else {
-            if (task.getEndTime().isAfter(endTimeFromSubtasks)){
-                endTimeFromSubtasks = task.getEndTime();
+            } else {
+                if (task.getEndTime().isAfter(endTimeFromSubtasks)) {
+                    endTimeFromSubtasks = task.getEndTime();
+                }
             }
-            }
-            }
+        }
         return endTimeFromSubtasks;
     }
-
-    /*public void setEpicDuration(){
-        if (getChildSubtasks().size() == 0){
-            setStartTime(null);
-            setDuration(null);
-        } else {
-            LocalDateTime endTime = getEndTime();
-            LocalDateTime startTime = getStartTime();
-            Duration epicDuration = Duration.between(startTime, endTime);
-            setDuration(epicDuration);
-        }
-    }*/
-
-    public void setEpicDuration() {
-        long epicDuration = 0;
-        if (getChildSubtasks().size() == 0) {
-            setStartTime(null);
-            setDuration(null);
-        } else {
-            for (Task subtask: getChildSubtasks()){
-                epicDuration += subtask.getDuration().toMinutes();
-            }
-            setDuration(Duration.ofMinutes(epicDuration));
-        }
-    }
-
 
     @Override
     public LocalDateTime getStartTime() {
@@ -85,32 +60,6 @@ public class Epic extends Task {
             setStartTime(startTime);
         }
         return startTime;
-    }
-
-    public void checkStatus() {
-        int doneCounter = 0;
-        if (childSubtasks.size() == 0) {
-            setStatus(Status.NEW);
-            return;
-        }
-        for (Subtask task : childSubtasks) {
-            if (task.getStatus().equals(Status.DONE)) {
-                doneCounter++;
-                setStatus(Status.IN_PROGRESS);
-            } else if (task.getStatus().equals(Status.IN_PROGRESS)) {
-                setStatus(Status.IN_PROGRESS);
-                break;
-            } else {
-                if (doneCounter == 0) {
-                    setStatus(Status.NEW);
-                } else {
-                    setStatus(Status.IN_PROGRESS);
-                }
-            }
-        }
-        if (doneCounter == this.childSubtasks.size() && doneCounter != 0) {
-            setStatus(Status.DONE);
-        }
     }
 
     @Override
@@ -145,5 +94,44 @@ public class Epic extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), childSubtasks);
+    }
+
+    public void setEpicDuration() {
+        long epicDuration = 0;
+        if (getChildSubtasks().size() == 0) {
+            setStartTime(null);
+            setDuration(null);
+        } else {
+            for (Task subtask : getChildSubtasks()) {
+                epicDuration += subtask.getDuration().toMinutes();
+            }
+            setDuration(Duration.ofMinutes(epicDuration));
+        }
+    }
+
+    public void checkStatus() {
+        int doneCounter = 0;
+        if (childSubtasks.size() == 0) {
+            setStatus(Status.NEW);
+            return;
+        }
+        for (Subtask task : childSubtasks) {
+            if (task.getStatus().equals(Status.DONE)) {
+                doneCounter++;
+                setStatus(Status.IN_PROGRESS);
+            } else if (task.getStatus().equals(Status.IN_PROGRESS)) {
+                setStatus(Status.IN_PROGRESS);
+                break;
+            } else {
+                if (doneCounter == 0) {
+                    setStatus(Status.NEW);
+                } else {
+                    setStatus(Status.IN_PROGRESS);
+                }
+            }
+        }
+        if (doneCounter == this.childSubtasks.size() && doneCounter != 0) {
+            setStatus(Status.DONE);
+        }
     }
 }

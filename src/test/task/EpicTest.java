@@ -3,12 +3,16 @@ package test.task;
 import main.manager.FileBackedTasksManager;
 import main.manager.InMemoryTaskManager;
 import main.manager.TaskManager;
+
 import static main.task.Task.Status.*;
 
 import main.task.Epic;
 import main.task.Subtask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,6 +45,8 @@ class EpicTest {
                 NEW, "16.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask2);
         assertEquals(NEW, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 16, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(720), epic.getDuration());
     }
 
     @Test
@@ -53,7 +59,6 @@ class EpicTest {
         tasksManager.addSubtask(subtask2);
         assertEquals(NEW, epic.getStatus(), "Wrong Status");
     }
-
 
     @Test
     public void getStatusWithDoneSubtasksFb() {
@@ -127,6 +132,8 @@ class EpicTest {
                 NEW, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
         assertEquals(NEW, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 17, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(360), epic.getDuration());
     }
 
     @Test
@@ -135,6 +142,8 @@ class EpicTest {
                 DONE, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
         assertEquals(DONE, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 17, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(360), epic.getDuration());
     }
 
     @Test
@@ -143,6 +152,8 @@ class EpicTest {
                 IN_PROGRESS, "17.02.2022 15:22", 360, epic);
         tasksManager.addSubtask(subtask1);
         assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 17, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(360), epic.getDuration());
     }
 
     @Test
@@ -151,6 +162,8 @@ class EpicTest {
                 NEW, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
         assertEquals(NEW, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 17, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(360), epic.getDuration());
     }
 
     @Test
@@ -159,14 +172,18 @@ class EpicTest {
                 DONE, "17.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask1);
         assertEquals(DONE, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 17, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(360), epic.getDuration());
     }
 
     @Test
     public void getStatusWithOneInProgressSubtasksFb() {
         Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
-                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
+                IN_PROGRESS, "17.02.2022 15:22", 860, epic);
         fileBackedTasksManager.addSubtask(subtask1);
         assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 17, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(860), epic.getDuration());
     }
 
     @Test
@@ -178,15 +195,17 @@ class EpicTest {
                 DONE, "16.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask2);
         Subtask subtask3 = new Subtask("thirdSubtask", "third sub in epicTask1",
-                NEW, "15.02.2022 15:22", 360, epic);
+                NEW, "15.02.2022 13:25", 360, epic);
         fileBackedTasksManager.addSubtask(subtask3);
         assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 15, 13, 25), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(1080), epic.getDuration());
     }
 
     @Test
     public void getStatusWithThreeSubsTm() {
         Subtask subtask1 = new Subtask("firstSubtask", "first sub in epicTask1",
-                IN_PROGRESS, "17.02.2022 15:22", 360, epic);
+                IN_PROGRESS, "04.01.2020 13:25", 360, epic);
         tasksManager.addSubtask(subtask1);
         Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
                 DONE, "16.02.2022 15:22", 360, epic);
@@ -195,6 +214,9 @@ class EpicTest {
                 NEW, "15.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask3);
         assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2020, 01, 04, 13, 25), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(1080), epic.getDuration());
     }
 
     @Test
@@ -206,6 +228,8 @@ class EpicTest {
                 NEW, "16.02.2022 15:22", 360, epic);
         fileBackedTasksManager.addSubtask(subtask2);
         assertEquals(IN_PROGRESS, epic.getStatus(), "Wrong Status");
+        assertEquals(LocalDateTime.of(2022, 02, 16, 15, 22), epic.getStartTime());
+        assertEquals(Duration.ofMinutes(720), epic.getDuration());
     }
 
     @Test

@@ -1,23 +1,21 @@
 package test.manager;
 
 import main.manager.FileBackedTasksManager;
-import main.manager.InMemoryTaskManager;
 import main.manager.exception.ManagerLoadException;
 import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
 import main.task.TaskType;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.time.Duration;
 
 import static main.task.Task.Status.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager> {
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     static final String FILE_PATH = "backUp.csv";
 
@@ -45,14 +43,14 @@ class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager
         Task task2FB = new Task("task#22", "taskForCheck", Task.Status.DONE,
                 "15.02.2022 07:00", 60);
         taskManager.addTask(task2FB);
-        taskManager.getTaskById(7);
-        taskManager.getTaskById(3);
-        taskManager.getTaskById(2);
-        taskManager.getTaskById(5);
-        taskManager.getTaskById(1);
-        taskManager.getTaskById(6);
-        taskManager.getTaskById(1);
-        taskManager.getTaskById(4);
+        taskManager.getTaskById(task2FB.getId());
+        taskManager.getTaskById(subtask1Fb.getId());
+        taskManager.getTaskById(epic2Fb.getId());
+        taskManager.getTaskById(subtask2Fb.getId());
+        taskManager.getTaskById(epic1fb.getId());
+        taskManager.getTaskById(task1Fb.getId());
+        taskManager.getTaskById(epic1fb.getId());
+        taskManager.getTaskById(subtask3Fb.getId());
     }
 
     @Test
@@ -67,6 +65,11 @@ class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager
 
     @Test
     void taskFromString() {
+        String taskString = "666,TASK,task#111,NEW,taskForCheck,01.02.2022 05:00,60";
+        Task parseTask = taskManager.taskFromString(taskString);
+        assertEquals(666, parseTask.getId(), "Id не соответствует");
+        assertEquals(Duration.ofMinutes(60), parseTask.getDuration(), "Длительность не соответствует");
+        assertEquals(NEW, parseTask.getStatus(), "Статус не соответствует");
     }
 
     @Test
@@ -97,19 +100,19 @@ class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager
 
     @Test
     void loadFromFileEmptyAllStrings() {
-       try {
-           taskManager.deleteAllTasksFromSet(TaskType.TASK);
-           taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
-           taskManager.deleteAllTasksFromSet(TaskType.EPIC);
-           assertEquals(0, taskManager.getTasks().size(), "Неверное количество задач.");
-           assertEquals(0, taskManager.getSubtasks().size(), "Неверное количество задач.");
-           assertEquals(0, taskManager.getEpics().size(), "Неверное количество задач.");
-           assertEquals(0, taskManager.getHistory().size(), "Неверное количество задач.");
-           File doc = new File("empty.csv");
-           FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
-       }catch (ManagerLoadException e) {
-           assertEquals("Файл некорректно был сохранен, восстановление невозможно", e.getMessage());
-       }
+        try {
+            taskManager.deleteAllTasksFromSet(TaskType.TASK);
+            taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+            taskManager.deleteAllTasksFromSet(TaskType.EPIC);
+            assertEquals(0, taskManager.getTasks().size(), "Неверное количество задач.");
+            assertEquals(0, taskManager.getSubtasks().size(), "Неверное количество задач.");
+            assertEquals(0, taskManager.getEpics().size(), "Неверное количество задач.");
+            assertEquals(0, taskManager.getHistory().size(), "Неверное количество задач.");
+            File doc = new File("empty.csv");
+            FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
+        } catch (ManagerLoadException e) {
+            assertEquals("Файл некорректно был сохранен, восстановление невозможно", e.getMessage());
+        }
     }
 
     @Test
@@ -125,9 +128,30 @@ class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager
         taskManager.addTask(task2);
         File doc = new File(FILE_PATH);
         FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
-        assertEquals(newFileManager.getTasks().size(), taskManager.getTasks().size(), "Неверное количество задач.");
-        assertEquals(newFileManager.getSubtasks().size(), taskManager.getSubtasks().size(), "Неверное количество задач.");
-        assertEquals(newFileManager.getEpics().size(), taskManager.getEpics().size(), "Неверное количество задач.");
+        assertEquals(newFileManager.getTasks().size(), taskManager.getTasks().size(),
+                "Неверное количество задач.");
+        assertEquals(newFileManager.getSubtasks().size(), taskManager.getSubtasks().size(),
+                "Неверное количество задач.");
+        assertEquals(newFileManager.getEpics().size(), taskManager.getEpics().size(),
+                "Неверное количество задач.");
         assertEquals(0, newFileManager.getHistory().size(), "Неверное количество задач.");
+    }
+
+    @Test
+    void loadFromFileWithEmptyChildList() {
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        File doc = new File(FILE_PATH);
+        FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
+        assertEquals(newFileManager.getTasks().size(), taskManager.getTasks().size(),
+                "Неверное количество задач.");
+        assertEquals(0, newFileManager.getSubtasks().size(),
+                "Неверное количество задач.");
+        assertEquals(newFileManager.getEpics().size(), taskManager.getEpics().size(),
+                "Неверное количество задач.");
+        assertEquals(newFileManager.getHistory().size(), taskManager.getHistory().size(),
+                "Неверное количество задач.");
+        int deltaSize = taskManager.getPrioritizedTasks().size() - taskManager.getSubtasks().size();
+        assertEquals(taskManager.getPrioritizedTasks().size() - deltaSize,
+                newFileManager.getPrioritizedTasks().size(), "Неверное время эпика после удаления подзадач");
     }
 }

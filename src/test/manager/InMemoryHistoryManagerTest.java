@@ -43,7 +43,6 @@ class InMemoryHistoryManagerTest {
         inMemoryHistoryManager.remove(3);
         inMemoryHistoryManager.remove(4);
         inMemoryHistoryManager.add(null);
-
         Assertions.assertTrue(inMemoryHistoryManager.getHistory().isEmpty());
     }
 
@@ -52,7 +51,6 @@ class InMemoryHistoryManagerTest {
         int sizeHistory1 = inMemoryHistoryManager.getHistory().size();
         inMemoryHistoryManager.add(null);
         int sizeHistory2 = inMemoryHistoryManager.getHistory().size();
-
         assertEquals(sizeHistory1, sizeHistory2);
     }
 
@@ -65,7 +63,6 @@ class InMemoryHistoryManagerTest {
         int sizeHistory1 = inMemoryHistoryManager.getHistory().size();
         inMemoryHistoryManager.add(task1);
         int sizeHistory2 = inMemoryHistoryManager.getHistory().size();
-
         assertEquals(sizeHistory1, sizeHistory2);
     }
 
@@ -77,7 +74,6 @@ class InMemoryHistoryManagerTest {
         inMemoryHistoryManager.add(task3);
         int sizeHistory1 = inMemoryHistoryManager.getHistory().size();
         Task addedTask = inMemoryHistoryManager.getHistory().get(4);
-
         assertEquals(5, sizeHistory1);
         assertEquals(task3, addedTask);
     }
@@ -86,7 +82,6 @@ class InMemoryHistoryManagerTest {
     void removeFirstElement() {
         inMemoryHistoryManager.remove(1);
         int sizeHistory1 = inMemoryHistoryManager.getHistory().size();
-
         assertEquals(3, sizeHistory1);
     }
 
@@ -94,7 +89,6 @@ class InMemoryHistoryManagerTest {
     void removeLastElement() {
         inMemoryHistoryManager.remove(4);
         int sizeHistory1 = inMemoryHistoryManager.getHistory().size();
-
         assertEquals(3, sizeHistory1);
     }
 
@@ -102,7 +96,6 @@ class InMemoryHistoryManagerTest {
     void removeMiddleElement() {
         inMemoryHistoryManager.remove(2);
         int sizeHistory1 = inMemoryHistoryManager.getHistory().size();
-
         assertEquals(3, sizeHistory1);
     }
 
@@ -113,7 +106,6 @@ class InMemoryHistoryManagerTest {
         inMemoryHistoryManager.remove(3);
         inMemoryHistoryManager.remove(4);
         int size = inMemoryHistoryManager.getHistory().size();
-
         assertEquals(0, size);
     }
 
@@ -122,7 +114,6 @@ class InMemoryHistoryManagerTest {
         inMemoryHistoryManager.remove(1);
         inMemoryHistoryManager.remove(2);
         int size = inMemoryHistoryManager.getHistory().size();
-
         assertEquals(2, size);
     }
 }

@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 
-public class Task implements Comparable <Task> {
+public class Task implements Comparable<Task> {
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private String name;
@@ -22,7 +22,7 @@ public class Task implements Comparable <Task> {
         this.description = description;
         this.status = status;
         this.startTime = LocalDateTime.parse(startTime, formatter);
-        this. duration = Duration.ofMinutes(duration);
+        this.duration = Duration.ofMinutes(duration);
     }
 
     public Task(String name, String description, Status status) {
@@ -52,10 +52,25 @@ public class Task implements Comparable <Task> {
                 return 1;
             } else return 0;
         } else if (startTime != null && o.getStartTime() == null) {
-    return -1;
+            return -1;
         } else {
             return 1;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && name.equals(task.name) && description.equals(task.description)
+                && status == task.status && Objects.equals(duration, task.duration)
+                && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, id, status, duration, startTime);
     }
 
     public void setName(String name) {
@@ -122,22 +137,6 @@ public class Task implements Comparable <Task> {
     public LocalDateTime getEndTime() {
         return startTime.plusMinutes(getDuration().toMinutes());
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id && name.equals(task.name) && description.equals(task.description)
-                && status == task.status && Objects.equals(duration, task.duration)
-                && Objects.equals(startTime, task.startTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, id, status, duration, startTime);
-    }
-
 
     public enum Status {
         NEW,

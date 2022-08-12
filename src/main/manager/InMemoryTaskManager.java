@@ -11,13 +11,10 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-
     private final TreeSet<Task> taskSet = new TreeSet<>();
-
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
-
     private int count = 0;
 
     public HistoryManager getHistoryManager() {
@@ -121,7 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.remove(id);
             epic.checkStatus();
             epic.setEpicDuration();
-        } else if (epics.containsKey(id)){
+        } else if (epics.containsKey(id)) {
             Epic epic = epics.get(id);
             for (Subtask subtask : epic.getChildSubtasks()) {
                 historyManager.remove(subtask.getId());
@@ -195,7 +192,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (subtasks.containsKey(id)) {
             historyManager.add(subtasks.get(id));
             return subtasks.get(id);
-        } else if(epics.containsKey(id)) {
+        } else if (epics.containsKey(id)) {
             historyManager.add(epics.get(id));
             return epics.get(id);
         } else {
