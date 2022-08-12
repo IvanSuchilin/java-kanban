@@ -15,10 +15,77 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static main.task.Task.Status.DONE;
+import static main.task.Task.Status.IN_PROGRESS;
+
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private final String path;
     static final String FILE_PATH = "backUp.csv";
+
+    public static void main(String[] args) {
+
+        FileBackedTasksManager fileBacked = new FileBackedTasksManager(FILE_PATH);
+
+        Task newTask1 = new Task("task#112", "taskForCheck", Task.Status.NEW,
+                "10.05.2022 15:00", 60);   //создать-добавить задачу
+
+        fileBacked.addTask(newTask1);
+
+        Task newTask2 = new Task("task#222", "taskForCheck", Task.Status.DONE,
+                "15.09.2022 07:00", 60);
+
+        Epic epic1 = new Epic("epic#11", "epicForCheck", IN_PROGRESS);
+
+        fileBacked.addEpic(epic1);
+
+        Subtask subtask1 = new Subtask("subtask#111", "subtaskForCheck",
+                DONE, "12.07.2022 22:30", 60, epic1);
+
+        fileBacked.addSubtask(subtask1);
+
+        Subtask subtask2 = new Subtask("subtask#111", "subtaskForCheck",
+                DONE, "12.07.2022 20:30", 60, epic1);
+
+        fileBacked.addSubtask(subtask2);
+
+        fileBacked.getTaskById(1);
+
+        fileBacked.getTaskById(2);
+
+        fileBacked.getTaskById(1);
+
+        fileBacked.getTaskById(4);
+
+        //проверка
+
+        System.out.println(fileBacked.getTasks());
+
+        System.out.println(fileBacked.getSubtasks());
+
+        System.out.println(fileBacked.getEpics());
+
+        System.out.println(fileBacked.getHistory());
+
+        File doc = new File(FILE_PATH);
+
+        FileBackedTasksManager fileBacked2 = loadFromFile(doc);
+
+        System.out.println();
+
+        System.out.println("MANAGER FROM FILE");
+
+        System.out.println();
+
+        System.out.println(fileBacked2.getTasks());
+
+        System.out.println(fileBacked2.getSubtasks());
+
+        System.out.println(fileBacked2.getEpics());
+
+        System.out.println(fileBacked2.getHistory());
+
+    }
 
     public FileBackedTasksManager() {
         path = FILE_PATH;
