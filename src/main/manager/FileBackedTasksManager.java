@@ -32,31 +32,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return path;
     }
 
-    private Task addBackedTask(String[] split) {
-        switch (split[1]) {
-            case "TASK":
-                Task newTask = new Task(split[2], split[4], Task.Status.valueOf(split[3]), split[5], Long.parseLong(split[6]));
-                getTasks().put(Integer.parseInt(split[0]), newTask);
-                newTask.setId(Integer.parseInt(split[0]));
-                return newTask;
-            case "SUBTASK":
-                int parentsId = Integer.parseInt(split[7]);
-                Epic parent = getEpics().get(parentsId);
-                Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]), split[5], Long.parseLong(split[6]), parent);
-                getSubtasks().put(Integer.parseInt(split[0]), newSubTask);
-                newSubTask.setId(Integer.parseInt(split[0]));
-                parent.getChildSubtasks().add(newSubTask);
-                parent.checkStatus();
-                parent.setEpicDuration();
-                return newSubTask;
-            default:
-                Epic newEpic = new Epic(split[2], split[4], Task.Status.valueOf(split[3]));
-                getEpics().put(Integer.parseInt(split[0]), newEpic);
-                newEpic.setId(Integer.parseInt(split[0]));
-                return newEpic;
-        }
-    }
-
     public Task taskFromString(String value) {
         String[] split = value.split(",");
         return addBackedTask(split);
@@ -200,5 +175,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             splitList.add((Integer.parseInt(splitItem)));
         }
         return splitList;
+    }
+
+    private Task addBackedTask(String[] split) {
+        switch (split[1]) {
+            case "TASK":
+                Task newTask = new Task(split[2], split[4], Task.Status.valueOf(split[3]), split[5], Long.parseLong(split[6]));
+                getTasks().put(Integer.parseInt(split[0]), newTask);
+                newTask.setId(Integer.parseInt(split[0]));
+                return newTask;
+            case "SUBTASK":
+                int parentsId = Integer.parseInt(split[7]);
+                Epic parent = getEpics().get(parentsId);
+                Subtask newSubTask = new Subtask(split[2], split[4], Task.Status.valueOf(split[3]), split[5], Long.parseLong(split[6]), parent);
+                getSubtasks().put(Integer.parseInt(split[0]), newSubTask);
+                newSubTask.setId(Integer.parseInt(split[0]));
+                parent.getChildSubtasks().add(newSubTask);
+                parent.checkStatus();
+                parent.setEpicDuration();
+                return newSubTask;
+            default:
+                Epic newEpic = new Epic(split[2], split[4], Task.Status.valueOf(split[3]));
+                getEpics().put(Integer.parseInt(split[0]), newEpic);
+                newEpic.setId(Integer.parseInt(split[0]));
+                return newEpic;
+        }
     }
 }

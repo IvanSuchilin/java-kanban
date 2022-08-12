@@ -15,10 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHistoryManagerTest {
 
-    HistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+    HistoryManager inMemoryHistoryManager;
 
     @BeforeEach
     public void create() {
+
+        inMemoryHistoryManager = new InMemoryHistoryManager();
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);
         task1.setId(1);

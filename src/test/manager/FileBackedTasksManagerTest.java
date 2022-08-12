@@ -60,10 +60,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void addBackedTask() {
-    }
-
-    @Test
     void taskFromString() {
         String taskString = "666,TASK,task#111,NEW,taskForCheck,01.02.2022 05:00,60";
         Task parseTask = taskManager.taskFromString(taskString);
