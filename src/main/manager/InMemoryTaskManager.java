@@ -11,7 +11,7 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private final TreeSet<Task> taskSet = new TreeSet<>();
+    private final Set<Task> taskSet = new TreeSet<>();
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
@@ -29,7 +29,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public TreeSet<Task> getTaskSet() {
+    public Set<Task> getTaskSet() {
         return taskSet;
     }
 
@@ -226,7 +226,7 @@ public class InMemoryTaskManager implements TaskManager {
         return subtasksName;
     }
 
-    public ArrayList<Task> getPrioritizedTasks() {
+    public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(taskSet);
     }
 

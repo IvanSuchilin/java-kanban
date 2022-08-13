@@ -6,6 +6,7 @@ import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
 import main.task.TaskType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +22,11 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @BeforeEach
     void setUp() {
-
         File doc = new File(FILE_PATH);
         taskManager = new FileBackedTasksManager(FILE_PATH);
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epic1fb = new Epic("epic#11", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1fb);
         Epic epic2Fb = new Epic("epic#222", "epicForCheck", NEW);
@@ -53,6 +56,13 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         taskManager.getTaskById(subtask3Fb.getId());
     }
 
+    @AfterEach
+    void setUpTmt() {
+        taskManager.deleteAllTasksFromSet(TaskType.TASK);
+        taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
+        taskManager.deleteAllTasksFromSet(TaskType.EPIC);
+    }
+
     @Test
     void getPath() {
         String path = taskManager.getPath();
@@ -60,26 +70,56 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void taskFromString() {
+    void taskFromStringDurationTest() {
+        String taskString = "666,TASK,task#111,NEW,taskForCheck,01.02.2022 05:00,60";
+        Task parseTask = taskManager.taskFromString(taskString);
+        assertEquals(Duration.ofMinutes(60), parseTask.getDuration(), "Длительность не соответствует");
+    }
+
+    @Test
+    void taskFromStringIdTest() {
         String taskString = "666,TASK,task#111,NEW,taskForCheck,01.02.2022 05:00,60";
         Task parseTask = taskManager.taskFromString(taskString);
         assertEquals(666, parseTask.getId(), "Id не соответствует");
-        assertEquals(Duration.ofMinutes(60), parseTask.getDuration(), "Длительность не соответствует");
+    }
+
+    @Test
+    void taskFromStringStatusTest() {
+        String taskString = "666,TASK,task#111,NEW,taskForCheck,01.02.2022 05:00,60";
+        Task parseTask = taskManager.taskFromString(taskString);
         assertEquals(NEW, parseTask.getStatus(), "Статус не соответствует");
     }
 
     @Test
-    void loadFromFile() {
+    void loadFromFileTasksTest() {
         File doc = new File(FILE_PATH);
         FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
         assertEquals(newFileManager.getTasks().size(), taskManager.getTasks().size(), "Неверное количество задач.");
+    }
+
+    @Test
+    void loadFromFileSubtasksTest() {
+        File doc = new File(FILE_PATH);
+        FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
         assertEquals(newFileManager.getSubtasks().size(), taskManager.getSubtasks().size(), "Неверное количество задач.");
+    }
+
+    @Test
+    void loadFromFileEpicsTest() {
+        File doc = new File(FILE_PATH);
+        FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
         assertEquals(newFileManager.getEpics().size(), taskManager.getEpics().size(), "Неверное количество задач.");
+    }
+
+    @Test
+    void loadFromFileHistoryTest() {
+        File doc = new File(FILE_PATH);
+        FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
         assertEquals(newFileManager.getHistory().size(), taskManager.getHistory().size(), "Неверное количество задач.");
     }
 
     @Test
-    void loadFromFileEmptyData() {
+    void loadFromFileEmptyDataTest() {
         taskManager.deleteAllTasksFromSet(TaskType.TASK);
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
@@ -95,15 +135,11 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void loadFromFileEmptyAllStrings() {
+    void loadFromFileEmptyAllStringsTest() {
         try {
             taskManager.deleteAllTasksFromSet(TaskType.TASK);
             taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
             taskManager.deleteAllTasksFromSet(TaskType.EPIC);
-            assertEquals(0, taskManager.getTasks().size(), "Неверное количество задач.");
-            assertEquals(0, taskManager.getSubtasks().size(), "Неверное количество задач.");
-            assertEquals(0, taskManager.getEpics().size(), "Неверное количество задач.");
-            assertEquals(0, taskManager.getHistory().size(), "Неверное количество задач.");
             File doc = new File("empty.csv");
             FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
         } catch (ManagerLoadException e) {
@@ -112,7 +148,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void loadFromFileEmptyHistory() {
+    void loadFromFileEmptyHistoryTest() {
         taskManager.deleteAllTasksFromSet(TaskType.TASK);
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
@@ -124,28 +160,14 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         taskManager.addTask(task2);
         File doc = new File(FILE_PATH);
         FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
-        assertEquals(newFileManager.getTasks().size(), taskManager.getTasks().size(),
-                "Неверное количество задач.");
-        assertEquals(newFileManager.getSubtasks().size(), taskManager.getSubtasks().size(),
-                "Неверное количество задач.");
-        assertEquals(newFileManager.getEpics().size(), taskManager.getEpics().size(),
-                "Неверное количество задач.");
         assertEquals(0, newFileManager.getHistory().size(), "Неверное количество задач.");
     }
 
     @Test
-    void loadFromFileWithEmptyChildList() {
+    void loadFromFileWithEmptyChildListTest() {
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         File doc = new File(FILE_PATH);
         FileBackedTasksManager newFileManager = FileBackedTasksManager.loadFromFile(doc);
-        assertEquals(newFileManager.getTasks().size(), taskManager.getTasks().size(),
-                "Неверное количество задач.");
-        assertEquals(0, newFileManager.getSubtasks().size(),
-                "Неверное количество задач.");
-        assertEquals(newFileManager.getEpics().size(), taskManager.getEpics().size(),
-                "Неверное количество задач.");
-        assertEquals(newFileManager.getHistory().size(), taskManager.getHistory().size(),
-                "Неверное количество задач.");
         int deltaSize = taskManager.getPrioritizedTasks().size() - taskManager.getSubtasks().size();
         assertEquals(taskManager.getPrioritizedTasks().size() - deltaSize,
                 newFileManager.getPrioritizedTasks().size(), "Неверное время эпика после удаления подзадач");

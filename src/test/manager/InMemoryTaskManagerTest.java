@@ -8,13 +8,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static main.task.Task.Status.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
-
 
     @BeforeEach
     void setUp() {
@@ -42,13 +42,13 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         Task task2 = new Task("task#2", "taskForCheck", Task.Status.DONE,
                 "24.02.2022 07:00", 60);
         taskManager.addTask(task2);
-        ArrayList<Task> priorizitedTask = taskManager.getPrioritizedTasks();
+        List<Task> priorizitedTask = taskManager.getPrioritizedTasks();
         assertNotNull(priorizitedTask, "Задачи не возвращаются.");
         assertEquals(5, priorizitedTask.size(), "Неверное количество задач.");
         assertEquals(subtask2, priorizitedTask.get(0), "Задачи не совпадают.");
         assertEquals(task2, priorizitedTask.get(4), "Задачи не совпадают.");
         taskManager.deleteTaskById(5);
-        ArrayList<Task> priorizitedTaskSec = taskManager.getPrioritizedTasks();
+        List<Task> priorizitedTaskSec = taskManager.getPrioritizedTasks();
         assertEquals(subtask3, priorizitedTaskSec.get(0), "Задачи не совпадают.");
         taskManager.deleteTaskById(1);
         taskManager.deleteTaskById(2);

@@ -5,16 +5,13 @@ import main.task.Subtask;
 import main.task.Task;
 import main.task.TaskType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 public interface TaskManager {
 
     List<Task> getHistory();
 
-    TreeSet<Task> getTaskSet();
+    Set<Task> getTaskSet();
 
     Map<Integer, Task> getTasks();
 
@@ -42,5 +39,5 @@ public interface TaskManager {
 
     void updateSubtask(Subtask subtask);
 
-    ArrayList<String> getTasksFromEpicTask(Epic epic);
+    List<String> getTasksFromEpicTask(Epic epic);
 }
