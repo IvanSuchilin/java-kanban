@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Task implements Comparable<Task> {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private String name;
     private String description;
     private int id;

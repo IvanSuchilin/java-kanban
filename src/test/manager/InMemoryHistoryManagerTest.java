@@ -33,7 +33,7 @@ class InMemoryHistoryManagerTest {
         epic1.setId(3);
         inMemoryHistoryManager.add(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                Task.Status.DONE, "22.02.2022 22:30", 60, epic1);
+                Task.Status.DONE, "22.02.2022 22:30", 60, epic1.getId());
         subtask1.setId(4);
         inMemoryHistoryManager.add(subtask1);
     }

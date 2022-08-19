@@ -32,13 +32,13 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         Epic epic2Fb = new Epic("epic#222", "epicForCheck", NEW);
         taskManager.addEpic(epic2Fb);
         Subtask subtask1Fb = new Subtask("subtask#11", "subtaskForCheck",
-                DONE, "12.02.2022 22:30", 60, epic2Fb);
+                DONE, "12.02.2022 22:30", 60, epic2Fb.getId());
         taskManager.addSubtask(subtask1Fb);
         Subtask subtask3Fb = new Subtask("subtask#11", "subtaskForCheck",
-                IN_PROGRESS, "27.02.2022 22:30", 60, epic1fb);
+                IN_PROGRESS, "27.02.2022 22:30", 60, epic1fb.getId());
         taskManager.addSubtask(subtask3Fb);
         Subtask subtask2Fb = new Subtask("subtask#22", "subtaskForCheck",
-                NEW, "06.02.2022 15:22", 360, epic1fb);
+                NEW, "06.02.2022 15:22", 360, epic1fb.getId());
         taskManager.addSubtask(subtask2Fb);
         Task task1Fb = new Task("task#11", "taskForCheck", Task.Status.NEW,
                 "11.02.2022 05:00", 60);

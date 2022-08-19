@@ -28,13 +28,13 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
         taskManager.addEpic(epic2);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, epic2);
+                DONE, "22.02.2022 22:30", 60, epic2.getId());
         taskManager.addSubtask(subtask1);
         Subtask subtask3 = new Subtask("subtask#1", "subtaskForCheck",
-                IN_PROGRESS, "17.02.2022 22:30", 60, epic1);
+                IN_PROGRESS, "17.02.2022 22:30", 60, epic1.getId());
         taskManager.addSubtask(subtask3);
         Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
-                NEW, "16.02.2022 15:22", 360, epic1);
+                NEW, "16.02.2022 15:22", 360, epic1.getId());
         taskManager.addSubtask(subtask2);
         Task task1 = new Task("task#1", "taskForCheck", Task.Status.NEW,
                 "24.02.2022 05:00", 60);

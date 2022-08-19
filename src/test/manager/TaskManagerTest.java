@@ -20,11 +20,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
     static final Epic EPIC_TMT = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
     static final Subtask SUBTASK_FIRST = new Subtask("subtask#1", "subtaskForCheck",
-            DONE, "22.02.2022 22:30", 60, EPIC_TMT);
+            DONE, "22.02.2022 22:30", 60, EPIC_TMT.getId());
     static final Subtask SUBTASK_SECOND = new Subtask("subtask#2", "subtaskForCheck",
-            IN_PROGRESS, "17.02.2022 22:30", 60, EPIC_TMT);
+            IN_PROGRESS, "17.02.2022 22:30", 60, EPIC_TMT.getId());
     static final Subtask SUBTASK_THIRD = new Subtask("subtask#3", "third sub in epicTask1",
-            NEW, "16.02.2022 15:22", 360, EPIC_TMT);
+            NEW, "16.02.2022 15:22", 360, EPIC_TMT.getId());
 
     @BeforeEach
     void setUp() {
@@ -36,13 +36,19 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTasksFromSet(TaskType.TASK);
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.addEpic(EPIC_TMT);
-        taskManager.addSubtask(SUBTASK_FIRST);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
         taskManager.getTaskById(EPIC_TMT.getId());
-        taskManager.getTaskById(SUBTASK_FIRST.getId());
-        taskManager.getTaskById(SUBTASK_SECOND.getId());
-        taskManager.getTaskById(SUBTASK_THIRD.getId());
+        taskManager.getTaskById(firstFOrCheck.getId());
+        taskManager.getTaskById(secondFOrCheck.getId());
+        taskManager.getTaskById(thirdFOrCheck.getId());
         List<Task> history = taskManager.getHistory();
         assertNotNull(history, "Задачи не возвращаются.");
         assertEquals(4, history.size(), "Неверное количество задач.");
@@ -54,12 +60,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTasksFromSet(TaskType.TASK);
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.addEpic(EPIC_TMT);
-        taskManager.addSubtask(SUBTASK_FIRST);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
         TreeSet<Task> tasksForValidation = (TreeSet<Task>) taskManager.getTaskSet();
         assertEquals(3, tasksForValidation.size(), "Неверное количество задач.");
-        assertEquals(SUBTASK_THIRD, tasksForValidation.first(), "Неверная задача.");
+        assertEquals(thirdFOrCheck, tasksForValidation.first(), "Неверная задача.");
     }
 
     @Test
@@ -68,12 +80,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTasksFromSet(TaskType.TASK);
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.addEpic(EPIC_TMT);
-        taskManager.addSubtask(SUBTASK_FIRST);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
         TreeSet<Task> tasksForValidation = (TreeSet<Task>) taskManager.getTaskSet();
-        taskManager.deleteTaskById(SUBTASK_THIRD.getId());
-        assertEquals(SUBTASK_SECOND, tasksForValidation.first(), "Неверная задача.");
+        taskManager.deleteTaskById(thirdFOrCheck.getId());
+        assertEquals(secondFOrCheck, tasksForValidation.first(), "Неверная задача.");
     }
 
     @Test
@@ -106,21 +124,26 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void getSubtasksTest() {
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.addEpic(EPIC_TMT);
-        taskManager.addSubtask(SUBTASK_FIRST);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
-        Map<Integer, Subtask> subtasks = taskManager.getSubtasks();
-        assertEquals(3, subtasks.size(), "Неверное количество задач.");
-        assertEquals(SUBTASK_THIRD, subtasks.get(SUBTASK_THIRD.getId()), "Задачи не совпадают.");
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
+        assertEquals(3, taskManager.getSubtasks().size(), "Неверное количество задач.");
+        assertEquals(thirdFOrCheck, taskManager.getSubtasks().get(thirdFOrCheck.getId()), "Задачи не совпадают.");
     }
 
     @Test
     void addSubtaskTestCheckParentsStatus() {
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
-         Epic checkEpic = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
+        Epic checkEpic = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(checkEpic);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, checkEpic);
+                DONE, "22.02.2022 22:30", 60, checkEpic.getId());
         Task taskWithId = taskManager.addSubtask(subtask1);
         final int subtaskId = taskWithId.getId();
         final Task savedTask = taskManager.getSubtasks().get(subtaskId);
@@ -137,9 +160,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic checkEpic = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(checkEpic);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, checkEpic);
+                DONE, "22.02.2022 22:30", 60, checkEpic.getId());
         taskManager.addSubtask(subtask1);
-        assertEquals(checkEpic, subtask1.getParent(), "Родитель подзадачи не совпадает");
+        assertEquals(checkEpic.getId(), subtask1.getParentId(), "Родитель подзадачи не совпадает");
     }
 
     @Test
@@ -174,7 +197,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteTaskByIdEpicTest() {
         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         taskManager.addEpic(EPIC_TMT);
-        taskManager.addSubtask(SUBTASK_FIRST);
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
         taskManager.deleteTaskById(EPIC_TMT.getId());
         assertEquals(0, taskManager.getEpics().size(), "Эпик не удален");
         assertEquals(0, taskManager.getSubtasks().size(), "Эпик с подзадачей не удален");
@@ -195,8 +220,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         Epic epicCheck = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epicCheck);
-        taskManager.addSubtask(SUBTASK_FIRST);
-        taskManager.deleteTaskById(SUBTASK_FIRST.getId());
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.deleteTaskById(firstFOrCheck.getId());
         assertEquals(NEW, epicCheck.getStatus(), "Статус эпика при удалении подзадачи неверный");
     }
 
@@ -204,7 +231,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteTaskByWrongIdTest() {
         try {
             taskManager.addEpic(EPIC_TMT);
-            taskManager.addSubtask(SUBTASK_FIRST);
+            Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                    DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
             taskManager.deleteTaskById(3);
         } catch (IllegalArgumentException e) {
             assertNotEquals("", e.getMessage());
@@ -216,12 +244,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         taskManager.addEpic(EPIC_TMT);
-        taskManager.addSubtask(SUBTASK_FIRST);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
         List<Task> subtasksList = taskManager.getAllTypeTasksList(TaskType.SUBTASK);
         assertEquals(3, subtasksList.size(), "Неверное количество задач.");
-        assertEquals(SUBTASK_FIRST, subtasksList.get(0), "Задачи не совпадают.");
+        assertEquals(firstFOrCheck, subtasksList.get(0), "Задачи не совпадают.");
     }
 
     @Test
@@ -230,9 +264,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addEpic(EPIC_TMT);
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
         taskManager.addEpic(epic2);
-        taskManager.addSubtask(SUBTASK_FIRST);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
         List<Task> epicsList = taskManager.getAllTypeTasksList(TaskType.EPIC);
         assertEquals(2, epicsList.size(), "Неверное количество задач.");
         assertEquals(EPIC_TMT, epicsList.get(0), "Задачи не совпадают.");
@@ -271,11 +311,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addEpic(EPIC_TMT);
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
         taskManager.addEpic(epic2);
-        Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, epic2);
-        taskManager.addSubtask(subtask1);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
+        Subtask firstFOrCheck = new Subtask("subtask#1", "subtaskForCheck",
+                DONE, "12.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(firstFOrCheck);
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
         assertEquals(0, taskManager.getSubtasks().size(), "Неверное количество задач.");
         assertEquals(0, taskManager.getEpics().size(), "Неверное количество задач.");
@@ -287,10 +331,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic2 = new Epic("epic#2", "epicForCheck", NEW);
         taskManager.addEpic(epic2);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, epic2);
+                DONE, "22.02.2022 22:30", 60, epic2.getId());
         taskManager.addSubtask(subtask1);
-        taskManager.addSubtask(SUBTASK_SECOND);
-        taskManager.addSubtask(SUBTASK_THIRD);
+        Subtask secondFOrCheck = new Subtask("subtask#2", "subtaskForCheck",
+                IN_PROGRESS, "11.02.2022 22:30", 60, EPIC_TMT.getId());
+        Subtask thirdFOrCheck = new Subtask("subtask#3", "third sub in epicTask1",
+                NEW, "09.02.2022 15:22", 360, EPIC_TMT.getId());
+        taskManager.addSubtask(secondFOrCheck);
+        taskManager.addSubtask(thirdFOrCheck);
         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
         assertEquals(0, taskManager.getSubtasks().size(), "Неверное количество задач.");
     }
@@ -300,7 +348,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         try {
             taskManager.addEpic(EPIC_TMT);
             Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                    DONE, "22.02.2022 22:30", 60, EPIC_TMT);
+                    DONE, "22.02.2022 22:30", 60, EPIC_TMT.getId());
             taskManager.addSubtask(subtask1);
             taskManager.getTaskById(3);
         } catch (IllegalArgumentException e) {
@@ -321,7 +369,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void getTaskByIdSubtaskTest() throws CloneNotSupportedException {
         taskManager.addEpic(EPIC_TMT);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, EPIC_TMT);
+                DONE, "22.02.2022 22:30", 60, EPIC_TMT.getId());
         taskManager.addSubtask(subtask1);
         Task subtask = taskManager.getTaskById(subtask1.getId());
         assertEquals(subtask, subtask1, "Задачи не равны");
@@ -366,7 +414,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic3 = new Epic("epic#3", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic3);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, epic3);
+                DONE, "22.02.2022 22:30", 60, epic3.getId());
         taskManager.addSubtask(subtask1);
         assertEquals(DONE, epic3.getStatus(), "Статус эпика неверный");
     }
@@ -376,7 +424,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic3 = new Epic("epic#3", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic3);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, epic3);
+                DONE, "22.02.2022 22:30", 60, epic3.getId());
         taskManager.addSubtask(subtask1);
         subtask1.changeStatus(IN_PROGRESS);
         taskManager.updateSubtask(subtask1);
@@ -390,13 +438,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic1 = new Epic("epic#1", "epicForCheck", IN_PROGRESS);
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask#1", "subtaskForCheck",
-                DONE, "22.02.2022 22:30", 60, epic1);
+                DONE, "22.02.2022 22:30", 60, epic1.getId());
         taskManager.addSubtask(subtask1);
         Subtask subtask3 = new Subtask("subtask#1", "subtaskForCheck",
-                IN_PROGRESS, "17.02.2022 22:30", 60, epic1);
+                IN_PROGRESS, "17.02.2022 22:30", 60, epic1.getId());
         taskManager.addSubtask(subtask3);
         Subtask subtask2 = new Subtask("secondSubtask", "second sub in epicTask1",
-                NEW, "16.02.2022 15:22", 360, epic1);
+                NEW, "16.02.2022 15:22", 360, epic1.getId());
         taskManager.addSubtask(subtask2);
         List<String> subtasksName = taskManager.getTasksFromEpicTask(epic1);
         assertNotNull(subtasksName, "Задачи не возвращаются.");

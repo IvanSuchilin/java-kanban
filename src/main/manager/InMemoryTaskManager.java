@@ -57,7 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
                 subtask.setId(increaseCount());
                 subtasks.put(subtask.getId(), subtask);
                 taskSet.add(subtask);
-                Epic epic = subtask.getParent();
+                Epic epic = epics.get(subtask.getParentId());
                 epic.getChildSubtasks().add(subtask);
                 epic.checkStatus();
                 epic.setEpicDuration();
@@ -104,7 +104,7 @@ public class InMemoryTaskManager implements TaskManager {
             taskSet.remove(tasks.get(id));
             tasks.remove(id);
         } else if (subtasks.containsKey(id)) {
-            Epic epic = subtasks.get(id).getParent();
+            Epic epic = epics.get(subtasks.get(id).getParentId());
             for (int i = 0; i < epic.getChildSubtasks().size(); i++) {
                 if (epic.getChildSubtasks().get(i).getId() == id) {
                     epic.getChildSubtasks().remove(i);
@@ -213,8 +213,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
-        subtask.getParent().checkStatus();
-        subtask.getParent().setEpicDuration();
+        epics.get(subtask.getParentId()).checkStatus();
+        epics.get(subtask.getParentId()).setEpicDuration();
     }
 
     @Override

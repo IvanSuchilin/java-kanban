@@ -3,22 +3,22 @@ package main.task;
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private final Epic parent;
+    private final int parentId;
 
-    public Subtask(String name, String description, Task.Status status, String startTime, long duration, Epic parent) {
+    public Subtask(String name, String description, Task.Status status, String startTime, long duration, int parentId) {
         super(name, description, status, startTime, duration);
-        this.parent = parent;
+        this.parentId = parentId;
     }
 
-    public Subtask(String name, String description, Status status, Epic parent) {
+    public Subtask(String name, String description, Status status, int parentId) {
         super(name, description, status);
-        this.parent = parent;
+        this.parentId = parentId;
     }
 
     @Override
     public String toCsvString() {
         return String.join(",", Integer.toString(getId()), TaskType.SUBTASK.toString(), getName(),
-                getStatus().toString(), getDescription(),getStartTime().format(getFormatter()), Long.toString(getDuration().toMinutes()),Integer.toString(getParent().getId()));
+                getStatus().toString(), getDescription(),getStartTime().format(getFormatter()), Long.toString(getDuration().toMinutes()),Integer.toString(getParentId()));
     }
 
     @Override
@@ -28,9 +28,14 @@ public class Subtask extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() + '\'' +
                 ", status=" + getStatus() + '\'' +
-                ", parent=" + getParent().getName() + '\'' +
+                ", parent=" + getParentId() + '\'' +
                 ", startTime=" + getStartTime() +
                 '}';
+    }
+
+
+    public int getParentId() {
+        return parentId;
     }
 
     @Override
@@ -39,15 +44,11 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return parent.equals(subtask.parent);
+        return parentId == subtask.parentId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), parent);
-    }
-
-    public Epic getParent() {
-        return parent;
+        return Objects.hash(super.hashCode(), parentId);
     }
 }
