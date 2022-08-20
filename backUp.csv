@@ -1,4 +1,7 @@
 id,type,name,status,description,startTime,duration,epic
-1,TASK,task#11,NEW,taskForCheck,11.02.2022 05:00,60
+3,TASK,task#11,NEW,taskForCheck,11.02.2022 05:00,60
+4,TASK,task#22,DONE,taskForCheck,15.02.2022 07:00,60
+1,EPIC,epic#222,DONE,epicForCheck,12.02.2022 22:30,60
+2,SUBTASK,subtask#11,DONE,subtaskForCheck,12.02.2022 22:30,60,1
 
-
+1
