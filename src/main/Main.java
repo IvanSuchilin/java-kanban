@@ -1,6 +1,8 @@
 package main;
 
 import main.Server.HttpTaskServer;
+import main.Server.KVServer;
+import main.Server.KVTaskClient;
 import main.manager.FileBackedTasksManager;
 import main.manager.Managers;
 import main.manager.TaskManager;
@@ -14,7 +16,13 @@ import static main.task.Task.Status.*;
 import static main.task.Task.Status.NEW;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
+
+
+            new KVServer().start();
+        KVTaskClient klient = new KVTaskClient("http://localhost:8078/register");
+        System.out.println(klient.getApiToken());
+
 
         HttpTaskServer httpTaskServer = new HttpTaskServer();
         httpTaskServer.start();
@@ -32,3 +40,5 @@ public class Main {
         HttpTaskServer.fBManager.addTask(task2FB);
     }
 }
+
+

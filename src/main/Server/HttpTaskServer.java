@@ -10,6 +10,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import main.manager.FileBackedTasksManager;
 import main.manager.Managers;
+import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
 import main.task.TaskType;
@@ -30,16 +31,18 @@ public class HttpTaskServer {
     private final HttpServer server;
     public static final FileBackedTasksManager fBManager = Managers.getDefaultFileBackedManager();
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    static Gson gson = new GsonBuilder()
-            // .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapterTime())
-            .create();
+    static Gson gson;
 
     public HttpTaskServer() throws IOException {
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapterTime())
+                .create();
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         server.createContext("/tasks", new GetPrioritizedTaskHandler());
         server.createContext("/tasks/task", new TaskHandler());
         server.createContext("/tasks/history", new GetHistoryHandler());
+        server.createContext("/tasks/subtask", new SubtaskHandler());
+        server.createContext("/tasks/epic", new EpicHandler());
     }
 
     public void start() {
@@ -97,9 +100,8 @@ public class HttpTaskServer {
                     os.write(response.getBytes());
                 }
             } else {
-                httpExchange.sendResponseHeaders(200, 0);
-                response = splitStrings[3];
-                // response = gson.toJson(fBManager.getHistory());
+                httpExchange.sendResponseHeaders(400, 0);
+                response = "Неверный запрос";
                 try (OutputStream os = httpExchange.getResponseBody()) {
                     os.write(response.getBytes());
                 }
@@ -148,6 +150,7 @@ public class HttpTaskServer {
                                     os.write(response.getBytes());
                                 }
                             } else {
+                                httpExchange.sendResponseHeaders(424, 0);
                                 response = "Задача не добавлена";
                                 try (OutputStream os = httpExchange.getResponseBody()) {
                                     os.write(response.getBytes());
@@ -164,6 +167,12 @@ public class HttpTaskServer {
                             os.write(response.getBytes());
                         }
                         break;
+                    default:
+                        httpExchange.sendResponseHeaders(405, 0);
+                        response = "Метод не поддерживается";
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
                 }
             } else if (splitStrings.length == 3 && httpExchange.getRequestURI().getQuery() != null) {
                 switch (method) {
@@ -187,6 +196,12 @@ public class HttpTaskServer {
                             os.write(response.getBytes());
                         }
                         break;
+                    default:
+                        httpExchange.sendResponseHeaders(405, 0);
+                        response = "Метод не поддерживается";
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
                 }
             }
         }
@@ -233,6 +248,7 @@ public class HttpTaskServer {
                                     os.write(response.getBytes());
                                 }
                             } else {
+                                httpExchange.sendResponseHeaders(424, 0);
                                 response = "Задача не добавлена";
                                 try (OutputStream os = httpExchange.getResponseBody()) {
                                     os.write(response.getBytes());
@@ -243,12 +259,18 @@ public class HttpTaskServer {
                     case "DELETE":
                         httpExchange.sendResponseHeaders(200, 0);
                         fBManager.deleteAllTasksFromSet(TaskType.SUBTASK);
-                        response = "Удаление всех Task";
+                        response = "Удаление всех Subtask";
                         //response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
                         break;
+                    default:
+                        httpExchange.sendResponseHeaders(405, 0);
+                        response = "Метод не поддерживается";
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
                 }
             } else if (splitStrings.length == 3 && httpExchange.getRequestURI().getQuery() != null) {
                 switch (method) {
@@ -256,7 +278,7 @@ public class HttpTaskServer {
                         httpExchange.sendResponseHeaders(200, 0);
                         int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
                         fBManager.deleteTaskById(idForDelete);
-                        response = "Удаление Task по id=" + idForDelete;
+                        response = "Удаление Subtask по id=" + idForDelete;
                         // response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
@@ -272,6 +294,110 @@ public class HttpTaskServer {
                             os.write(response.getBytes());
                         }
                         break;
+                    default:
+                        httpExchange.sendResponseHeaders(405, 0);
+                        response = "Метод не поддерживается";
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                }
+            }
+        }
+    }
+
+    static class EpicHandler implements HttpHandler {
+
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException {
+            String method = httpExchange.getRequestMethod();
+            //System.out.println( httpExchange.getRequestURI().getQuery());
+            System.out.println("Началась обработка " + method + " /tasks/epic запроса от клиента.");
+            String response;
+            ArrayList<Task> arrayResponse;
+            String path = httpExchange.getRequestURI().getPath();
+            String[] splitStrings = path.split("/");
+            if (splitStrings.length == 3 && httpExchange.getRequestURI().getQuery() == null) {
+                switch (method) {
+                    case "GET":
+                        httpExchange.sendResponseHeaders(200, 0);
+                        arrayResponse = new ArrayList<>(fBManager.getEpics().values());
+                        System.out.println("Получение списка всех Subtask");
+                        response = gson.toJson(arrayResponse);
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                        break;
+                    case "POST":
+                        httpExchange.sendResponseHeaders(200, 0);
+                        InputStream inputStream = httpExchange.getRequestBody();
+                        String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+                        Epic epic = gson.fromJson(body, Epic.class);
+                        if (epic.getId() != 0) {
+                            fBManager.updateEpic(epic);
+                            response = "Задача обновлена";
+                            try (OutputStream os = httpExchange.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                        } else {
+                            Epic addTask = fBManager.addEpic(epic);
+                            if (addTask != null) {
+                                response = gson.toJson(addTask);
+                                try (OutputStream os = httpExchange.getResponseBody()) {
+                                    os.write(response.getBytes());
+                                }
+                            } else {
+                                response = "Задача не добавлена";
+                                httpExchange.sendResponseHeaders(424, 0);
+                                try (OutputStream os = httpExchange.getResponseBody()) {
+                                    os.write(response.getBytes());
+                                }
+                            }
+                        }
+                        break;
+                    case "DELETE":
+                        httpExchange.sendResponseHeaders(200, 0);
+                        fBManager.deleteAllTasksFromSet(TaskType.EPIC);
+                        response = "Удаление всех Subtask";
+                        //response = null;
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                        break;
+                    default:
+                        httpExchange.sendResponseHeaders(405, 0);
+                        response = "Метод не поддерживается";
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                }
+            } else if (splitStrings.length == 3 && httpExchange.getRequestURI().getQuery() != null) {
+                switch (method) {
+                    case "DELETE":
+                        httpExchange.sendResponseHeaders(200, 0);
+                        int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        fBManager.deleteTaskById(idForDelete);
+                        response = "Удаление Epic по id=" + idForDelete;
+                        // response = null;
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                        break;
+                    case "GET":
+                        httpExchange.sendResponseHeaders(200, 0);
+                        int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        fBManager.getTaskById(idGet);
+                        System.out.println("Получение задачи по id=" + idGet);
+                        response = gson.toJson(fBManager.getTaskById(idGet));
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                        break;
+                    default:
+                        httpExchange.sendResponseHeaders(405, 0);
+                        response = "Метод не поддерживается";
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
                 }
             }
         }
