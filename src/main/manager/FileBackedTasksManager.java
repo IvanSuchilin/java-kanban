@@ -138,7 +138,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return super.getPrioritizedTasks();
     }
 
-    private void save() {
+    protected void save() {
         try {
             File backUp = new File(path);
             PrintWriter pw = new PrintWriter(backUp);

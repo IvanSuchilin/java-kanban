@@ -3,9 +3,6 @@ package main;
 import main.Server.HttpTaskServer;
 import main.Server.KVServer;
 import main.Server.KVTaskClient;
-import main.manager.FileBackedTasksManager;
-import main.manager.Managers;
-import main.manager.TaskManager;
 import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
@@ -28,16 +25,16 @@ public class Main {
         httpTaskServer.start();
 
         Epic epic2Fb = new Epic("epic#222", "epicForCheck", NEW);
-        HttpTaskServer.fBManager.addEpic(epic2Fb);
+        HttpTaskServer.taskManager.addEpic(epic2Fb);
         Subtask subtask1Fb = new Subtask("subtask#11", "subtaskForCheck",
                 DONE, "12.02.2022 22:30", 60, epic2Fb.getId());
-        HttpTaskServer.fBManager.addSubtask(subtask1Fb);
+        HttpTaskServer.taskManager.addSubtask(subtask1Fb);
         Task task1Fb = new Task("task#11", "taskForCheck", Task.Status.NEW,
                 "11.02.2022 05:00", 60);
-        HttpTaskServer.fBManager.addTask(task1Fb);
+        HttpTaskServer.taskManager.addTask(task1Fb);
         Task task2FB = new Task("task#22", "taskForCheck", Task.Status.DONE,
                 "15.02.2022 07:00", 60);
-        HttpTaskServer.fBManager.addTask(task2FB);
+        HttpTaskServer.taskManager.addTask(task2FB);
     }
 }
 

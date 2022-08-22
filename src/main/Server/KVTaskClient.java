@@ -11,11 +11,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVTaskClient {
-//http://localhost:8078/
+    //http://localhost:8078/
     URI url;
-    private final String API_TOKEN;
-    
-    
+    private String API_TOKEN;
+
+
     public URI getUrl() {
 
         return url;
@@ -25,7 +25,6 @@ public class KVTaskClient {
         return API_TOKEN;
     }
 
-    
 
     public KVTaskClient(String url) throws IOException, InterruptedException {
         this.url = URI.create(url);
@@ -51,8 +50,8 @@ public class KVTaskClient {
         }
     }
 
-    void put(String key, String json){
-        URI putUrl = URI.create("http://localhost:8078/save/" + key +"?API_TOKEN=" + API_TOKEN);
+   public void put(String key, String json) {
+        URI putUrl = URI.create("http://localhost:8078/save/" + key + "?API_TOKEN=" + API_TOKEN);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(this.url)
                 .POST(HttpRequest.BodyPublishers.ofString(json))
@@ -67,7 +66,8 @@ public class KVTaskClient {
         }
     }
 
-    String load(String key){
+    public String load(String key){
+        String responseReturn = null;
         URI putUrl = URI.create("http://localhost:8078/save/" + key +"?API_TOKEN=" + API_TOKEN);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(this.url)
@@ -78,18 +78,17 @@ public class KVTaskClient {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
                 JsonElement jsonElement = JsonParser.parseString(response.body());
-                if(!jsonElement.isJsonObject()) { // проверяем, точно ли мы получили JSON-объект
+                if (!jsonElement.isJsonObject()) { // проверяем, точно ли мы получили JSON-объект
                     System.out.println("Ответ от сервера не соответствует ожидаемому.");
                     return null;
                 }
-
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-////НАДО ДОПИСАТЬ
-                return response;
-        } catch (IOException | InterruptedException e) { // обрабатываем ошибки отправки запроса
+            }
+            responseReturn = String.valueOf(response);
+            } catch (IOException | InterruptedException e) { // обрабатываем ошибки отправки запроса
             System.out.println("Во время выполнения запроса ресурса по url-адресу: '" + url + "' возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
-    }
+       return responseReturn;
     }
 }
+

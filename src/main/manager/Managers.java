@@ -2,7 +2,15 @@ package main.manager;
 
 final public class Managers {
     static HistoryManager historyManager = new InMemoryHistoryManager();
-    static TaskManager taskManager = new InMemoryTaskManager();
+    static TaskManager taskManager;
+
+    static {
+        try {
+            taskManager = new HTTPTaskManager("http://localhost:8078/register");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static TaskManager getDefault() {
         return taskManager;
