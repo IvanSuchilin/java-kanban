@@ -2,6 +2,7 @@ package main.manager;
 
 final public class Managers {
     static HistoryManager historyManager = new InMemoryHistoryManager();
+    //HistoryManager historyManager = new InMemoryHistoryManager();
     static TaskManager taskManager;
 
     static {
@@ -16,7 +17,7 @@ final public class Managers {
         return taskManager;
     }
 
-    public static HistoryManager getDefaultHistory() {
+    public  HistoryManager getDefaultHistory() {
         return historyManager;
     }
 
