@@ -30,13 +30,14 @@
 
         private static final int PORT = 8080;
         private final HttpServer server;
-        public static final HTTPTaskManager taskManager = (HTTPTaskManager) Managers.getDefault();
+        public static HTTPTaskManager taskManager;
         private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
         static Gson gson;
 
-        public HttpTaskServer() throws IOException {
+        public HttpTaskServer() throws Exception {
+            taskManager = new HTTPTaskManager("http://localhost:8078");
             gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapterTime())
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapterTime().nullSafe())
                     .create();
             server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
             server.createContext("/tasks", new GetPrioritizedTaskHandler());
@@ -57,7 +58,11 @@
 
             @Override
             public void write(final JsonWriter jsonWriter, final LocalDateTime localDatetime) throws IOException {
-                jsonWriter.value(localDatetime.format(formatterWriter));
+                if (localDatetime != null){
+                    jsonWriter.value(localDatetime.format(formatterWriter));
+            } else{
+                    return;
+                }
             }
 
             @Override

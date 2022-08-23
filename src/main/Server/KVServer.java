@@ -44,12 +44,12 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                String value = readText(h);
+               /* String value = readText(h);
                 if (value.isEmpty()) {
                     System.out.println("Value для загрузки значений пустой. value указывается в теле запроса");
                     h.sendResponseHeaders(400, 0);
                     return;
-                }
+                }*/
                 String jsonManager = data.get(key);
                 System.out.println("Значение для ключа " + key + " успешно загружено!");
                 h.sendResponseHeaders(200, 0);
@@ -69,7 +69,7 @@ public class KVServer {
         try {
             System.out.println("\n/save");
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+                System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }
