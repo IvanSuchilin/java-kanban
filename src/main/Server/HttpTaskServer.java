@@ -8,9 +8,7 @@
     import com.sun.net.httpserver.HttpExchange;
     import com.sun.net.httpserver.HttpHandler;
     import com.sun.net.httpserver.HttpServer;
-    import main.manager.HTTPTaskManager;
-    import main.manager.Managers;
-    import main.manager.TaskManager;
+    import main.manager.*;
     import main.task.Epic;
     import main.task.Subtask;
     import main.task.Task;
@@ -30,12 +28,12 @@
 
         private static final int PORT = 8080;
         private final HttpServer server;
-        public static HTTPTaskManager taskManager;
+        public static FileBackedTasksManager taskManager;
         private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
         static Gson gson;
 
         public HttpTaskServer() throws Exception {
-            taskManager = new HTTPTaskManager("http://localhost:8078");
+            taskManager = new FileBackedTasksManager();
             gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapterTime().nullSafe())
                     .create();
