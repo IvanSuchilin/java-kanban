@@ -3,7 +3,7 @@ package main.manager;
 final public class Managers {
     static HistoryManager historyManager = new InMemoryHistoryManager();
     //HistoryManager historyManager = new InMemoryHistoryManager();
-    static TaskManager taskManager;
+    static TaskManager taskManager = new InMemoryTaskManager();
 
     static {
         try {
