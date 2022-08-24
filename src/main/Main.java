@@ -18,8 +18,8 @@ import static main.task.Task.Status.NEW;
 public class Main {
     public static void main(String[] args) throws Exception {
         new KVServer().start();
-        HttpTaskServer httpTaskServer = new HttpTaskServer();
-        httpTaskServer.start();
+       // HttpTaskServer httpTaskServer = new HttpTaskServer();
+       // httpTaskServer.start();
         HTTPTaskManager tasksManager = new HTTPTaskManager("http://localhost:8078");
 
         //KVTaskClient client = new KVTaskClient("http://localhost:8078");

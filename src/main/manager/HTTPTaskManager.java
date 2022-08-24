@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jdk.internal.org.jline.reader.ScriptEngine;
 import main.Server.HttpTaskServer;
+import main.Server.KVServer;
 import main.Server.KVTaskClient;
 import main.manager.exception.ManagerLoadException;
 import main.manager.exception.ManagerSaveException;
@@ -56,6 +57,12 @@ public class HTTPTaskManager extends FileBackedTasksManager {
                 .collect(Collectors.toList());
         client.put("history", gson.toJson(history));
     }
+
+        public static void main(String[] args) throws Exception {
+
+             HttpTaskServer httpTaskServer = new HttpTaskServer();
+            httpTaskServer.start();
+        }
 
     public static HTTPTaskManager loadFromKVS() throws Exception {
         KVTaskClient kvTaskClient =new KVTaskClient("http://localhost:8078");

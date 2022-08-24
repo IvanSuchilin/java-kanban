@@ -33,7 +33,7 @@ public class HttpTaskServer {
 
     private FileBackedTasksManager taskManager;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    static Gson gson;
+    private Gson gson;
 
     public HttpTaskServer() throws Exception {
         taskManager = new FileBackedTasksManager();
@@ -46,6 +46,7 @@ public class HttpTaskServer {
         server.createContext("/tasks/history", new GetHistoryHandler());
         server.createContext("/tasks/subtask", new SubtaskHandler());
         server.createContext("/tasks/epic", new EpicHandler());
+
     }
 
     public FileBackedTasksManager getTaskManager() {
@@ -162,6 +163,7 @@ public class HttpTaskServer {
                             Task addTask = taskManager.addTask(task);
                             if (addTask != null) {
                                 response = gson.toJson(addTask);
+                                // response = "Задача добавлена";
                                 try (OutputStream os = httpExchange.getResponseBody()) {
                                     os.write(response.getBytes());
                                 }
@@ -317,9 +319,33 @@ public class HttpTaskServer {
                             os.write(response.getBytes());
                         }
                 }
+            } else if (splitStrings.length == 4 && httpExchange.getRequestURI().getQuery() != null) {
+                switch (method) {
+                    case "GET":
+                        httpExchange.sendResponseHeaders(200, 0);
+                        int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        if (taskManager.getEpics().containsKey(idGet)){
+                            Epic epic = taskManager.getEpics().get(idGet);
+                           ArrayList<String> subtasks = taskManager.getTasksFromEpicTask(epic);
+                            System.out.println("Получение подзадач по id epic =" + idGet);
+                            response = gson.toJson(subtasks);
+                            try (OutputStream os = httpExchange.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                        }
+                        break;
+                    default:
+                        httpExchange.sendResponseHeaders(405, 0);
+                        response = "Метод не поддерживается";
+                        try (OutputStream os = httpExchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                        }
+                }
+
             }
         }
-    }
+
 
     class EpicHandler implements HttpHandler {
 

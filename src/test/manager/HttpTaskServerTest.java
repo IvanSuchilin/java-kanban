@@ -292,4 +292,127 @@ class HttpTaskServerTest {
             assertEquals(4, taskManager.getHistory().size(), "Размер истории не совпадает");
         }
     }
+
+    @Test
+    void getSubtaskFromEpic() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/subtask/epic/?id=1");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        JsonElement jsonElement = JsonParser.parseString(response.body());
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        List <String> subtasks = new ArrayList<>();
+        for (JsonElement jsonelement:jsonArray){
+            subtasks.add(jsonelement.getAsString());
+        }
+        assertEquals(1,subtasks.size(), "Количество подзадач не сходится");
+        assertEquals("subtask#11",subtasks.get(0), "Подзадачи не сходятся");
+    }
+
+    @Test
+    void addTask() throws IOException, InterruptedException {
+        Task newTask = new Task("newTaskTest", "taskForCheck", IN_PROGRESS,
+                "20.08.2022 07:00", 60);
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/task/");
+
+        String json = gson.toJson(newTask);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(3,taskManager.getTasks().size(), "Количество задач не сходится");
+    }
+
+    @Test
+    void updateTask() throws IOException, InterruptedException, CloneNotSupportedException {
+
+        taskManager.getTaskById(3).setStatus(NEW);
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/task/");
+
+        String json = gson.toJson(task);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(NEW,taskManager.getTaskById(3).getStatus(), "Статус задачи не сходится");
+        assertEquals(2,taskManager.getTasks().size(), "Количество задач не сходится");
+    }
+
+    @Test
+    void addSubtask() throws IOException, InterruptedException {
+        Subtask subtask2 = new Subtask("subtask#11", "subtaskForCheck",
+                IN_PROGRESS, "05.02.2022 22:30", 60,  epic.getId());
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/subtask/");
+
+        String json = gson.toJson(subtask2);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(2,taskManager.getSubtasks().size(), "Количество задач не сходится");
+    }
+
+    @Test
+    void updateSubtask() throws IOException, InterruptedException, CloneNotSupportedException {
+
+        taskManager.getTaskById(2).setStatus(NEW);
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/subtask/");
+
+        String json = gson.toJson(subtask);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(NEW,taskManager.getTaskById(2).getStatus(), "Статус задачи не сходится");
+        assertEquals(1,taskManager.getSubtasks().size(), "Количество задач не сходится");
+    }
+
+    @Test
+    void addEpic() throws IOException, InterruptedException {
+        Epic newEpic = new Epic("epic#new", "epicForCheck", NEW);
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/epic/");
+
+        String json = gson.toJson(newEpic);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(2,taskManager.getEpics().size(), "Количество задач не сходится");
+    }
+
+    @Test
+    void updateEpic() throws IOException, InterruptedException, CloneNotSupportedException {
+
+        taskManager.getTaskById(1).setDescription("newDescription");
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/epic/");
+
+        String json = gson.toJson(epic);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals("newDescription",taskManager.getTaskById(1).getDescription(), "Статус задачи не сходится");
+        assertEquals(1,taskManager.getEpics().size(), "Количество задач не сходится");
+    }
 }
