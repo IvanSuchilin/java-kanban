@@ -90,9 +90,21 @@ class HttpTaskServerTest {
         JsonElement jsonElement = JsonParser.parseString(response.body());
         JsonArray jsonObject = jsonElement.getAsJsonArray();
 
-        Type taskType = new TypeToken<ArrayList<Task>>() {}.getType();
-        List<Task> tasks = gson.fromJson(jsonObject, taskType);
-        assertEquals(2, tasks.get(0).getId(), "Задачи не совпадают");
+        JsonArray jsonTasks = JsonParser.parseString(response.body()).getAsJsonArray();
+        Type taskType = new TypeToken<Task>() {
+        }.getType();
+        Type subTaskType = new TypeToken<Subtask>() {
+        }.getType();
+        ArrayList<Task> tasks = new ArrayList<Task>();
+        for (int i = 0; i < jsonTasks.size(); i++) {
+            JsonObject taskJSON = jsonTasks.get(i).getAsJsonObject();
+            if (taskJSON.has("parentId")) {
+                tasks.add(gson.fromJson(taskJSON, subTaskType));
+            } else {
+                tasks.add(gson.fromJson(taskJSON, taskType));
+            }
+        }
+        assertEquals(subtask, tasks.get(0), "Задачи не совпадают");
     }
 
     @Test
@@ -152,5 +164,132 @@ class HttpTaskServerTest {
         Type epicType = new TypeToken<ArrayList<Epic>>() {}.getType();
         List<Epic> epics = gson.fromJson(response.body(), epicType);
         assertEquals(epic, epics.get(0), "Задачи не совпадают");
+    }
+
+    @Test
+    void getSubtasks() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/subtask/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        Type subtaskType = new TypeToken<ArrayList<Subtask>>() {}.getType();
+        List<Subtask> subtasks = gson.fromJson(response.body(), subtaskType);
+        assertEquals(subtask, subtasks.get(0), "Задачи не совпадают");
+    }
+
+    @Test
+    void deleteSubtaskById() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/subtask/?id=2");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(0, taskManager.getSubtasks().size(), "Размер не совпадает");
+    }
+
+    @Test
+    void deleteAllSubtask() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/subtask/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(0, taskManager.getSubtasks().size(), "Размер не совпадает");
+    }
+
+    @Test
+    void deleteTaskById() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/task/?id=3");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(1, taskManager.getTasks().size(), "Размер не совпадает");
+    }
+
+    @Test
+    void deleteAllTasks() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/task/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(0, taskManager.getTasks().size(), "Размер не совпадает");
+    }
+
+    @Test
+    void deleteEpicById() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/epic/?id=1");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(0, taskManager.getEpics().size(), "Размер не совпадает");
+        assertEquals(0, taskManager.getSubtasks().size(), "Размер не совпадает");
+    }
+
+    @Test
+    void deleteAllEpics() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/epic/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        assertEquals(0, taskManager.getEpics().size(), "Размер не совпадает");
+        assertEquals(0, taskManager.getSubtasks().size(), "Размер не совпадает");
+    }
+
+
+    @Test
+    void getHistory() throws IOException, InterruptedException, CloneNotSupportedException {
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(4);
+        taskManager.getTaskById(3);
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/history/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        JsonElement jsonElement = JsonParser.parseString(response.body());
+        JsonArray jsonObject = jsonElement.getAsJsonArray();
+
+        JsonArray jsonTasks = JsonParser.parseString(response.body()).getAsJsonArray();
+        Type epicTaskType = new TypeToken<Epic>() {
+        }.getType();
+        Type taskType = new TypeToken<Task>() {
+        }.getType();
+        Type subTaskType = new TypeToken<Subtask>() {
+        }.getType();
+        ArrayList<Task> tasks = new ArrayList<Task>();
+        for (int i = 0; i < jsonTasks.size(); i++) {
+            JsonObject taskJSON = jsonTasks.get(i).getAsJsonObject();
+            if (taskJSON.has("parentId")) {
+                tasks.add(gson.fromJson(taskJSON, subTaskType));
+                if (taskJSON.has("childSubtasks")) {
+                    tasks.add(gson.fromJson(taskJSON, epicTaskType));
+                } else {
+                    tasks.add(gson.fromJson(taskJSON, taskType));
+                }
+            }
+            assertEquals(4, taskManager.getHistory().size(), "Размер истории не совпадает");
+        }
     }
 }
