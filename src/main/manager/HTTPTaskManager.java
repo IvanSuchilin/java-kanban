@@ -58,11 +58,6 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         client.put("history", gson.toJson(history));
     }
 
-        public static void main(String[] args) throws Exception {
-
-             HttpTaskServer httpTaskServer = new HttpTaskServer();
-            httpTaskServer.start();
-        }
 
     public static HTTPTaskManager loadFromKVS() throws Exception {
         KVTaskClient kvTaskClient =new KVTaskClient("http://localhost:8078");

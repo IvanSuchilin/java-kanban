@@ -27,7 +27,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
             NEW, "16.02.2022 15:22", 360, EPIC_TMT.getId());
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
     }
 
     @Test
