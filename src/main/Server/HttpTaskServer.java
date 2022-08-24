@@ -28,7 +28,10 @@ public class HttpTaskServer {
 
     private static final int PORT = 8080;
     private final HttpServer server;
-    public static FileBackedTasksManager taskManager;
+
+
+
+    private FileBackedTasksManager taskManager;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     static Gson gson;
 
@@ -43,6 +46,10 @@ public class HttpTaskServer {
         server.createContext("/tasks/history", new GetHistoryHandler());
         server.createContext("/tasks/subtask", new SubtaskHandler());
         server.createContext("/tasks/epic", new EpicHandler());
+    }
+
+    public FileBackedTasksManager getTaskManager() {
+        return taskManager;
     }
 
     public void start() {
@@ -74,7 +81,7 @@ public class HttpTaskServer {
         }
     }
 
-    static class GetHistoryHandler implements HttpHandler {
+    class GetHistoryHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
@@ -90,7 +97,7 @@ public class HttpTaskServer {
     }
 
 
-    static class GetPrioritizedTaskHandler implements HttpHandler {
+    class GetPrioritizedTaskHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
@@ -118,7 +125,7 @@ public class HttpTaskServer {
         }
     }
 
-    static class TaskHandler implements HttpHandler {
+    class TaskHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
@@ -216,7 +223,7 @@ public class HttpTaskServer {
         }
     }
 
-    static class SubtaskHandler implements HttpHandler {
+    class SubtaskHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
@@ -314,7 +321,7 @@ public class HttpTaskServer {
         }
     }
 
-    static class EpicHandler implements HttpHandler {
+    class EpicHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {

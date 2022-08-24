@@ -71,13 +71,13 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         List<Task> tasksList = gson.fromJson( kvTaskClient.load("tasks"), taskType);
         for (Task task:tasksList){
             httpBacked.getTasks().put(task.getId(), task);
-            httpBacked.getPrioritizedTasks().add(task);
+            httpBacked.getTaskSet().add(task);
         }
         System.out.println(kvTaskClient.load("subtasks"));
         List<Subtask> subtasksList = gson.fromJson( kvTaskClient.load("subtasks"), subtaskType);
         for (Subtask subtask:subtasksList){
             httpBacked.getSubtasks().put(subtask.getId(), subtask);
-            httpBacked.getPrioritizedTasks().add(subtask);
+            httpBacked.getTaskSet().add(subtask);
         }
         List<Epic> epicsList = gson.fromJson(kvTaskClient.load("epics"), epicType);
         for (Epic epic:epicsList){
