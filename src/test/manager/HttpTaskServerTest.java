@@ -223,7 +223,6 @@ class HttpTaskServerTest {
         assertEquals(0, taskManager.getSubtasks().size(), "Размер не совпадает");
     }
 
-
     @Test
     void getHistory() throws IOException, InterruptedException, CloneNotSupportedException {
         taskManager.getTaskById(1);

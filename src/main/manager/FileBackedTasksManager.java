@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static main.task.Task.Status.DONE;
-import static main.task.Task.Status.IN_PROGRESS;
-
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private final String path;

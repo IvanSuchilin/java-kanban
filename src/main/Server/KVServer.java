@@ -11,9 +11,6 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
-/**
- * Постман: https://www.getpostman.com/collections/a83b61d9e1c81c10575c
- */
 public class KVServer {
     public static final int PORT = 8078;
     private final String apiToken;
@@ -29,7 +26,6 @@ public class KVServer {
     }
 
     private void load(HttpExchange h) throws IOException {
-        // TODO Добавьте получение значения по ключу
         try {
             System.out.println("\n/load");
             if (!hasAuth(h)) {
@@ -44,12 +40,6 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-               /* String value = readText(h);
-                if (value.isEmpty()) {
-                    System.out.println("Value для загрузки значений пустой. value указывается в теле запроса");
-                    h.sendResponseHeaders(400, 0);
-                    return;
-                }*/
                 String jsonManager = data.get(key);
                 System.out.println("Значение для ключа " + key + " успешно загружено!");
                 h.sendResponseHeaders(200, 0);
@@ -117,6 +107,11 @@ public class KVServer {
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         System.out.println("API_TOKEN: " + apiToken);
         server.start();
+    }
+
+    public void stop() {
+        System.out.println("Останавливаем сервер на порту " + PORT);
+        server.stop(0);
     }
 
     private String generateApiToken() {

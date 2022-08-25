@@ -2,7 +2,6 @@ package main.manager;
 
 final public class Managers {
     static HistoryManager historyManager = new InMemoryHistoryManager();
-    //HistoryManager historyManager = new InMemoryHistoryManager();
     static TaskManager taskManager = new InMemoryTaskManager();
 
     static {
@@ -17,10 +16,15 @@ final public class Managers {
         return taskManager;
     }
 
-    public  HistoryManager getDefaultHistory() {
+    public HistoryManager getDefaultHistory() {
         return historyManager;
     }
 
-    public static FileBackedTasksManager getDefaultFileBackedManager() {return  new FileBackedTasksManager();}
-    public static FileBackedTasksManager getDefaultFileBackedManager(String path) {return  new FileBackedTasksManager(path);}
+    public static FileBackedTasksManager getDefaultFileBackedManager() {
+        return new FileBackedTasksManager();
+    }
+
+    public static FileBackedTasksManager getDefaultFileBackedManager(String path) {
+        return new FileBackedTasksManager(path);
+    }
 }

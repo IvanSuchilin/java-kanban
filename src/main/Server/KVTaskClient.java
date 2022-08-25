@@ -1,8 +1,6 @@
 package main.Server;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
@@ -12,9 +10,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVTaskClient {
+
     private String API_TOKEN;
 
-    public KVTaskClient(String url) throws IOException, InterruptedException {
+    public KVTaskClient(String url) {
 
         URI registerUrl = URI.create(url + "/register");
         HttpRequest request = HttpRequest.newBuilder()

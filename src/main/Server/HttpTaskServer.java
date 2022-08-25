@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import main.manager.*;
+import main.manager.FileBackedTasksManager;
 import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,11 +27,7 @@ public class HttpTaskServer {
 
     private static final int PORT = 8080;
     private final HttpServer server;
-
-
-
     private FileBackedTasksManager taskManager;
-    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private Gson gson;
 
     public HttpTaskServer() throws Exception {
@@ -69,10 +64,9 @@ public class HttpTaskServer {
 
         @Override
         public void write(final JsonWriter jsonWriter, final LocalDateTime localDatetime) throws IOException {
-            if (localDatetime != null){
+            if (localDatetime != null) {
                 jsonWriter.value(localDatetime.format(formatterWriter));
-            } else{
-                return;
+            } else {
             }
         }
 
@@ -97,7 +91,6 @@ public class HttpTaskServer {
         }
     }
 
-
     class GetPrioritizedTaskHandler implements HttpHandler {
 
         @Override
@@ -105,12 +98,9 @@ public class HttpTaskServer {
             String method = httpExchange.getRequestMethod();
             System.out.println("Началась обработка " + method + " /tasks запроса от клиента.");
             String response;
-            ArrayList<Task> arrayResponse;
-
             String path = httpExchange.getRequestURI().getPath();
             String[] splitStrings = path.split("/");
             if (splitStrings.length == 2) {
-                // response = "Работает";
                 httpExchange.sendResponseHeaders(200, 0);
                 response = gson.toJson(taskManager.getPrioritizedTasks());
                 try (OutputStream os = httpExchange.getResponseBody()) {
@@ -131,7 +121,6 @@ public class HttpTaskServer {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String method = httpExchange.getRequestMethod();
-            //System.out.println( httpExchange.getRequestURI().getQuery());
             System.out.println("Началась обработка " + method + " /tasks/tasks запроса от клиента.");
             String response;
             ArrayList<Task> arrayResponse;
@@ -163,7 +152,6 @@ public class HttpTaskServer {
                             Task addTask = taskManager.addTask(task);
                             if (addTask != null) {
                                 response = gson.toJson(addTask);
-                                // response = "Задача добавлена";
                                 try (OutputStream os = httpExchange.getResponseBody()) {
                                     os.write(response.getBytes());
                                 }
@@ -180,7 +168,6 @@ public class HttpTaskServer {
                         httpExchange.sendResponseHeaders(200, 0);
                         taskManager.deleteAllTasksFromSet(TaskType.TASK);
                         response = "Удаление всех Task";
-                        //response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
@@ -199,7 +186,6 @@ public class HttpTaskServer {
                         int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
                         taskManager.deleteTaskById(idForDelete);
                         response = "Удаление Task по id=" + idForDelete;
-                        // response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
@@ -230,7 +216,6 @@ public class HttpTaskServer {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String method = httpExchange.getRequestMethod();
-            //System.out.println( httpExchange.getRequestURI().getQuery());
             System.out.println("Началась обработка " + method + " /tasks/subtask запроса от клиента.");
             String response;
             ArrayList<Task> arrayResponse;
@@ -278,7 +263,6 @@ public class HttpTaskServer {
                         httpExchange.sendResponseHeaders(200, 0);
                         taskManager.deleteAllTasksFromSet(TaskType.SUBTASK);
                         response = "Удаление всех Subtask";
-                        //response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
@@ -297,7 +281,6 @@ public class HttpTaskServer {
                         int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
                         taskManager.deleteTaskById(idForDelete);
                         response = "Удаление Subtask по id=" + idForDelete;
-                        // response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
@@ -320,31 +303,29 @@ public class HttpTaskServer {
                         }
                 }
             } else if (splitStrings.length == 4 && httpExchange.getRequestURI().getQuery() != null) {
-                switch (method) {
-                    case "GET":
-                        httpExchange.sendResponseHeaders(200, 0);
-                        int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
-                        if (taskManager.getEpics().containsKey(idGet)){
-                            Epic epic = taskManager.getEpics().get(idGet);
-                           ArrayList<String> subtasks = taskManager.getTasksFromEpicTask(epic);
-                            System.out.println("Получение подзадач по id epic =" + idGet);
-                            response = gson.toJson(subtasks);
-                            try (OutputStream os = httpExchange.getResponseBody()) {
-                                os.write(response.getBytes());
-                            }
-                        }
-                        break;
-                    default:
-                        httpExchange.sendResponseHeaders(405, 0);
-                        response = "Метод не поддерживается";
+                if ("GET".equals(method)) {
+                    httpExchange.sendResponseHeaders(200, 0);
+                    int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                    if (taskManager.getEpics().containsKey(idGet)) {
+                        Epic epic = taskManager.getEpics().get(idGet);
+                        ArrayList<String> subtasks = taskManager.getTasksFromEpicTask(epic);
+                        System.out.println("Получение подзадач по id epic =" + idGet);
+                        response = gson.toJson(subtasks);
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
-                        }
+                    }
+                } else {
+                    httpExchange.sendResponseHeaders(405, 0);
+                    response = "Метод не поддерживается";
+                    try (OutputStream os = httpExchange.getResponseBody()) {
+                        os.write(response.getBytes());
+                    }
                 }
-
             }
+
         }
+    }
 
 
     class EpicHandler implements HttpHandler {
@@ -352,7 +333,6 @@ public class HttpTaskServer {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String method = httpExchange.getRequestMethod();
-            //System.out.println( httpExchange.getRequestURI().getQuery());
             System.out.println("Началась обработка " + method + " /tasks/epic запроса от клиента.");
             String response;
             ArrayList<Task> arrayResponse;
@@ -400,7 +380,6 @@ public class HttpTaskServer {
                         httpExchange.sendResponseHeaders(200, 0);
                         taskManager.deleteAllTasksFromSet(TaskType.EPIC);
                         response = "Удаление всех Subtask";
-                        //response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
@@ -419,7 +398,6 @@ public class HttpTaskServer {
                         int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
                         taskManager.deleteTaskById(idForDelete);
                         response = "Удаление Epic по id=" + idForDelete;
-                        // response = null;
                         try (OutputStream os = httpExchange.getResponseBody()) {
                             os.write(response.getBytes());
                         }
