@@ -1,8 +1,8 @@
-package test.manager;
+package test.server;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import main.Server.HttpTaskServer;
+import main.server.HttpTaskServer;
 import main.manager.TaskManager;
 import main.task.Epic;
 import main.task.Subtask;

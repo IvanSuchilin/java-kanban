@@ -1,6 +1,6 @@
 package main;
 
-import main.Server.KVServer;
+import main.server.KVServer;
 import main.manager.HTTPTaskManager;
 import main.task.Epic;
 import main.task.Subtask;

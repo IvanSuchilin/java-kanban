@@ -1,4 +1,4 @@
-package main.Server;
+package main.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -183,7 +183,7 @@ public class HttpTaskServer {
                 switch (method) {
                     case "DELETE":
                         httpExchange.sendResponseHeaders(200, 0);
-                        int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        int idForDelete = getIdFromRequest(httpExchange);
                         taskManager.deleteTaskById(idForDelete);
                         response = "Удаление Task по id=" + idForDelete;
                         try (OutputStream os = httpExchange.getResponseBody()) {
@@ -192,7 +192,7 @@ public class HttpTaskServer {
                         break;
                     case "GET":
                         httpExchange.sendResponseHeaders(200, 0);
-                        int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        int idGet = getIdFromRequest(httpExchange);
                         taskManager.getTaskById(idGet);
                         System.out.println("Получение задачи по id=" + idGet);
                         response = gson.toJson(taskManager.getTaskById(idGet));
@@ -278,7 +278,7 @@ public class HttpTaskServer {
                 switch (method) {
                     case "DELETE":
                         httpExchange.sendResponseHeaders(200, 0);
-                        int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        int idForDelete = getIdFromRequest(httpExchange);
                         taskManager.deleteTaskById(idForDelete);
                         response = "Удаление Subtask по id=" + idForDelete;
                         try (OutputStream os = httpExchange.getResponseBody()) {
@@ -287,7 +287,7 @@ public class HttpTaskServer {
                         break;
                     case "GET":
                         httpExchange.sendResponseHeaders(200, 0);
-                        int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        int idGet = getIdFromRequest(httpExchange);
                         taskManager.getTaskById(idGet);
                         System.out.println("Получение задачи по id=" + idGet);
                         response = gson.toJson(taskManager.getTaskById(idGet));
@@ -305,7 +305,7 @@ public class HttpTaskServer {
             } else if (splitStrings.length == 4 && httpExchange.getRequestURI().getQuery() != null) {
                 if ("GET".equals(method)) {
                     httpExchange.sendResponseHeaders(200, 0);
-                    int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                    int idGet = getIdFromRequest(httpExchange);
                     if (taskManager.getEpics().containsKey(idGet)) {
                         Epic epic = taskManager.getEpics().get(idGet);
                         ArrayList<String> subtasks = taskManager.getTasksFromEpicTask(epic);
@@ -395,7 +395,7 @@ public class HttpTaskServer {
                 switch (method) {
                     case "DELETE":
                         httpExchange.sendResponseHeaders(200, 0);
-                        int idForDelete = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        int idForDelete = getIdFromRequest(httpExchange);
                         taskManager.deleteTaskById(idForDelete);
                         response = "Удаление Epic по id=" + idForDelete;
                         try (OutputStream os = httpExchange.getResponseBody()) {
@@ -404,7 +404,7 @@ public class HttpTaskServer {
                         break;
                     case "GET":
                         httpExchange.sendResponseHeaders(200, 0);
-                        int idGet = Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
+                        int idGet = getIdFromRequest(httpExchange);
                         taskManager.getTaskById(idGet);
                         System.out.println("Получение задачи по id=" + idGet);
                         response = gson.toJson(taskManager.getTaskById(idGet));
@@ -421,6 +421,10 @@ public class HttpTaskServer {
                 }
             }
         }
+    }
+
+    private int getIdFromRequest(HttpExchange httpExchange){
+        return Integer.parseInt(httpExchange.getRequestURI().getQuery().substring(3));
     }
 }
 

@@ -3,8 +3,8 @@ package main.manager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import main.Server.HttpTaskServer;
-import main.Server.KVTaskClient;
+import main.server.HttpTaskServer;
+import main.server.KVTaskClient;
 import main.task.Epic;
 import main.task.Subtask;
 import main.task.Task;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class HTTPTaskManager extends FileBackedTasksManager {
 
     private KVTaskClient client;
-    public URI url;
+    private static URI url;
 
     public HTTPTaskManager(String url) throws Exception {
         this.url = URI.create(url);
@@ -31,13 +31,13 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new HttpTaskServer.LocalDateAdapterTime().nullSafe())
                 .create();
-        client.put("tasks", gson.toJson(new ArrayList<>(getTasks().values())));
-        client.put("subtasks", gson.toJson(new ArrayList<>(getSubtasks().values())));
-        client.put("epics", gson.toJson(new ArrayList<>(getEpics().values())));
+        client.put("tasks", gson.toJson(new ArrayList<>(getTasks().values())), String.valueOf(url));
+        client.put("subtasks", gson.toJson(new ArrayList<>(getSubtasks().values())), String.valueOf(url));
+        client.put("epics", gson.toJson(new ArrayList<>(getEpics().values())), String.valueOf(url));
         List<Integer> history = getHistory().stream()
                 .map(Task::getId)
                 .collect(Collectors.toList());
-        client.put("history", gson.toJson(history));
+        client.put("history", gson.toJson(history), String.valueOf(url));
     }
 
     public static HTTPTaskManager loadFromKVS() throws Exception {
@@ -54,22 +54,22 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new HttpTaskServer.LocalDateAdapterTime().nullSafe())
                 .create();
-        List<Task> tasksList = gson.fromJson(kvTaskClient.load("tasks"), taskType);
+        List<Task> tasksList = gson.fromJson(kvTaskClient.load("tasks", String.valueOf(url)), taskType);
         for (Task task : tasksList) {
             httpBacked.getTasks().put(task.getId(), task);
             httpBacked.getTaskSet().add(task);
         }
-        System.out.println(kvTaskClient.load("subtasks"));
-        List<Subtask> subtasksList = gson.fromJson(kvTaskClient.load("subtasks"), subtaskType);
+        System.out.println(kvTaskClient.load("subtasks", String.valueOf(url)));
+        List<Subtask> subtasksList = gson.fromJson(kvTaskClient.load("subtasks", String.valueOf(url)), subtaskType);
         for (Subtask subtask : subtasksList) {
             httpBacked.getSubtasks().put(subtask.getId(), subtask);
             httpBacked.getTaskSet().add(subtask);
         }
-        List<Epic> epicsList = gson.fromJson(kvTaskClient.load("epics"), epicType);
+        List<Epic> epicsList = gson.fromJson(kvTaskClient.load("epics", String.valueOf(url)), epicType);
         for (Epic epic : epicsList) {
             httpBacked.getEpics().put(epic.getId(), epic);
         }
-        List<Integer> history = gson.fromJson(kvTaskClient.load("history"), historyType);
+        List<Integer> history = gson.fromJson(kvTaskClient.load("history", String.valueOf(url)), historyType);
         for (Integer id : history) {
             httpBacked.getTaskById(id);
         }
