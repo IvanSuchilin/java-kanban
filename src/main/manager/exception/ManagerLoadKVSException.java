@@ -1,6 +1,6 @@
 package main.manager.exception;
 
-public class ManagerLoadKVSException extends Exception {
+public class ManagerLoadKVSException extends RuntimeException {
 
     private final String message;
 
