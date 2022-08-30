@@ -52,6 +52,14 @@ public class KVTaskClient {
         HttpClient client = HttpClient.newHttpClient();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                if (response.statusCode() > 499) {
+                    System.out.println("Во время загрузки на сервере возникли проблемы");
+                } else {
+                    System.out.println("Проверьте значение URL и key и повторите запрос");
+                }
+                return null;
+            }
             if (response.statusCode() == 200) {
                 JsonElement jsonElement = JsonParser.parseString(response.body());
                 if (!jsonElement.isJsonObject() && !jsonElement.isJsonArray()) {
